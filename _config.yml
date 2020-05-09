@@ -16,9 +16,9 @@ minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt"
 
 # Site Settings
 locale                   : "en-US"
-title                    : Things of interest
+title                    : "Things of interest"
 title_separator          : "-"
-subtitle                 : by charlotte
+subtitle                 : "by charlotte"
 name                     : "Charlotte Lim"
 description              : "An website of my findings."
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
@@ -145,6 +145,7 @@ footer:
 include:
   - .htaccess
   - _pages
+  - /docs
   - assets/images/
 exclude:
   - "*.sublime-project"
@@ -171,7 +172,6 @@ exclude:
   - Rakefile
   - README
   - tmp
-  - /docs # ignore Minimal Mistakes /docs
   - /test # ignore Minimal Mistakes /test
 keep_files:
   - .git
