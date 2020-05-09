@@ -151,6 +151,7 @@ exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
   - vendor
+  - /docs/_oldPost
   - .asset-cache
   - .bundle
   - .jekyll-assets-cache
