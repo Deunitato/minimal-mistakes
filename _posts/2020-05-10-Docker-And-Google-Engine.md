@@ -1,5 +1,7 @@
 ---
+layout: post
 published: true
+title: Docker and Google Cloud (Kubernetes)
 ---
 # Introduction 
 
