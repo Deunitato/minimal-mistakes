@@ -134,6 +134,12 @@ Help auto create pod for users.
 
 - This might take a while for it to load before it fully deploy (Load balancing)
 
+`kubectrl proxy`
+- Gives a weblink for user interface
+- Allow us to see the stats
+> Rmb to use /ui
+
+
 # Findings/Reflection
 
 - Kubentes allow us to update our application while not destroying users experience (Reduce downtime)
@@ -143,3 +149,4 @@ Help auto create pod for users.
 - imagelayers.io: show us what each of the layers are doing
 
 
+Reference: https://www.youtube.com/watch?v=WAPXaDpkytw
