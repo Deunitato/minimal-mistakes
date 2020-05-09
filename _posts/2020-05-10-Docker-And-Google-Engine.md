@@ -3,7 +3,6 @@ layout: post
 published: true
 title: Docker and Google Cloud (Kubernetes)
 ---
-# Introduction 
 
 Docker is a containerisation technology where the containers allow us to wrap up any code that we write. 
 The difference between this an virtual machine is that the hyperviser requires a fake hardware (which takes up alot of space)
@@ -16,10 +15,10 @@ Layers makes the building containers fast. Sharing containers becomes faster bec
 
 > E.g: Changing containers is fast as long as we have the base infomation (we only need to download the changes)
 
-## Why Containers
+# Why Containers
 - Standardised environment
 
-## Docker in action
+# Docker in action
 
 `docker build -t webinar-flask:v1`
 
@@ -52,14 +51,14 @@ Installing the file:
 
 > Stops the containers
 
-## Multiple containers
+# Multiple containers
 
 - In the **docker-compose.yaml** file, we can specify the number of containers we want
 - We can specify the service (E.g redis)
 
 > It will auto fetch if we do not have the service
 
-## Kubernetes
+# Kubernetes
 - We can use kubenetes to update the containers
 - Set the cluster size 
 - A pod = a group of more than one containers
