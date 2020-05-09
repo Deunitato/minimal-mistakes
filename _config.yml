@@ -145,15 +145,15 @@ footer:
 include:
   - .htaccess
   - _pages
-  - /docs
+  - _posts
   - assets/images/
 exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
   - vendor
-  - /docs/_oldPost
   - .asset-cache
   - .bundle
+  - /docs
   - .jekyll-assets-cache
   - .sass-cache
   - assets/js/plugins
