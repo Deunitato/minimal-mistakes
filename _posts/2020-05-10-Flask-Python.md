@@ -74,18 +74,7 @@ Jinja2 syntax: `{% block body %}{% endblock %}`
 
 2. Change our index.html
 
-```
-{% extends 'base.html' %} <! –– Extending from our skeleton-->
-        
-{% block head %}
-<h1>Template</h1>
-        
-{% endblock %}
-        
-{% block body %}
-        
-{% endblock %}
-```
+![Flask_1.PNG]({{site.baseurl}}/img/Flask_1.PNG)
 
 - We do not need to repeat ourselves each time 
 - We can include css by including it in the base html 
