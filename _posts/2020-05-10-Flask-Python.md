@@ -64,13 +64,10 @@ Running this will allow us to start a webpage that says "Hello world" in `localh
 - Ensures that we only need to write what is relevant
 
 1. Create skeleton `base.html`
-
-Under `<head>`:
-
+Under head - 
 Jinja2 syntax: {% block head %}{% endblock %}
 
-Under `<body>`:
-
+Under body -
 Jinja2 syntax: {% block body %}{% endblock %}
 
 
@@ -114,7 +111,7 @@ Including stylesheet:
         class Todo(db.Model):
 			id = db.Column(db.Integer, primary_key= True) #Reference the id of each entry
             content = db.Column(db.String(200), nullable = False) # cannot be empty and has a size of 200
-            date_create = db.column(db,DateTime, default = datetime.utcnow)#Optional book keeping, must import datatime
+            date_create = db.column(db,DateTime, default = datetime.utcnow) # Optional book keeping, must import datatime
             
             def __repr__(self): #everytime we create a new class, it will run this and return it's id
             	return '<Task %r>' % self.id
