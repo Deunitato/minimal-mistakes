@@ -95,7 +95,7 @@ Jinja2 syntax: {% block body %}{% endblock %}
 
 Including stylesheet:
 
-`<link rel = "stylesheet" href = "{{url_for('<location of css>,  filename = 'css/main.css')}}">`
+`<link rel = "stylesheet" href = "{{url_for('<location of css>',  filename = 'css/main.css')}}">`
 
 # SQLAlchemy
 
@@ -107,7 +107,7 @@ Including stylesheet:
 
 2. Add the config under `app = Flask()..'
 
-      	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #Tells the app where our database is added
+      	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite : /// test.db' #Tells the app where our database is added
         db = SQLALchemy(app) #init the database
         
         
