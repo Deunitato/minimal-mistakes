@@ -270,13 +270,7 @@ edit it to
 
 4. Create a new update.html to serve the update
 
-> Hint: We can copy the form from the index.html
-```
-		<form action="/update/{{task.id}}" method = "POST">
- 			<input type = "text" name= "content" id="content" value = "{{task.content}}">
-            <input type = "submit" value="Add Task">
-         </form>
-```
+
 
 
 # Findings/reflection
