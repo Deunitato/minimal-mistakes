@@ -71,7 +71,7 @@ Jinja2 syntax: `{% block head %}{% endblock %}`
 
 Under `<body>`:
 
-Jinja2 syntax: `{%block body %}{% endblock %}`
+Jinja2 syntax: `{% block body %}{% endblock %}`
 
 
 - This will specify where we are going to fill up the infomation using other html files
