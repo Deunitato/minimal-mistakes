@@ -73,17 +73,18 @@ Jinja2 syntax: `{% block body %}{% endblock %}`
 
 2. Change our index.html
 
-		`{% extends 'base.html' %} <! –– Extending from our skeleton-->`
+```
+{% extends 'base.html' %} <! –– Extending from our skeleton-->
         
-        `{% block head %}`
-        `<h1>Template</h1>`
+{% block head %}
+<h1>Template</h1>
         
-        `{% endblock %}`
+{% endblock %}
         
-        `{% block body %}`
+{% block body %}
         
-        `{% endblock %}`
-
+{% endblock %}
+```
 
 - We do not need to repeat ourselves each time 
 - We can include css by including it in the base html 
@@ -100,7 +101,10 @@ Including stylesheet:
 
 `from flask_sqlalchemy import SQLAlchemy`
 
-2. Add the config under `app = Flask()..'
+2. Add the config under 
+
+```
+app = Flask()..'
 
       	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite : /// test.db' #Tells the app where our database is added
         db = SQLALchemy(app) #init the database
@@ -113,6 +117,7 @@ Including stylesheet:
             
             def __repr__(self): #everytime we create a new class, it will run this and return it's id
             	return '<Task %r>' % self.id
+```
         
 > Four / means absolute path
 
@@ -121,8 +126,8 @@ Including stylesheet:
 //Not covered here
 
 4. Add lines to index.html
-
-		`<div class = "content">
+```
+		<div class = "content">
         	<h1> Task Master </h1>
             
             <table>
@@ -141,8 +146,8 @@ Including stylesheet:
                     </td>
                  </tr>
               </table>
-         </div>`
-                    
+         </div>
+  ```                  
  - This will create a table with Delete and Update  
 5. Add methods
 
@@ -155,25 +160,25 @@ Edit the route
 - Now our app accepts two methods
 
 We can now update our index.html to include a form
-
-		`<form action="/" method = "POST">
+```
+		<form action="/" method = "POST">
  			<input type = "text" name= "content" id="content">
             <input type = "submit" value="Add Task">`
-
+```
 - Edit the index() method
-
+```
 		def index():
 			if request.method =='POST':
             	return 'Hello'
             else:
             	return render_template('index.html')
-
+```
 > Remember to insert request in the import file
 
 - We are able to click on the 'submit' button
 
 We can update our request.method
-
+```
 			task_content = reuqest.form['content"]
             new_task = ToDo(content = task_content)
             
@@ -183,18 +188,18 @@ We can update our request.method
                 return redirect('/') # return back to our index page
             except:
                 return 'There was an issue adding your task'
-                
+```                
 Update our else method:
-
+```
 			task = Todo.query.order_by(Todo.date_created).all() #grabs all the task in db by date created 
             return render_template('index.html', tasks = tasks) # parse it as parameters
-
+```
 Add Jinja2 into our index.html:
-
-`{% for task in taks %}`
-
+```
+{% for task in taks %}
+```
 From our prev example excerpt:
-
+```
             <table>
             	<tr>
                    <th>Task</th>
@@ -212,7 +217,7 @@ From our prev example excerpt:
                     </td>
                  </tr>
               </table>
-
+```
 
 > The creation is now done, we can create task now
 
@@ -226,7 +231,7 @@ From our prev example excerpt:
 `@app.route('/delete/<int:id>')`
 
 2. Create our method
-
+```
 		def delete(id):
 			task_to_delete = Todo.query.get_or+404(id) #attempt to get the task by id else it will 404
             
@@ -236,7 +241,7 @@ From our prev example excerpt:
                 return redirect('/')
             except:
             	return 'There was a prob deleting the task'
-
+```
 3. Update our html file
 
 `<a href = ""> Delete </a>`
@@ -252,7 +257,7 @@ edit it to
 `@app.route('/update/<int:id>', methods = ['GET', 'POST'])`
 
 2. Create our method
-
+```
 		def update(id):
         	task = Todo.query.get_or_404(id) # get the task
 			if request.method == 'POST':
@@ -266,7 +271,7 @@ edit it to
                 
             else:
             	return render_template('update.html', task=task)
-            
+ ```           
 the task'
 
 3. Update our html file
@@ -281,11 +286,11 @@ edit it to
 4. Create a new update.html to serve the update
 
 > Hint: We can copy the form from the index.html
-
+```
 		<form action="/update/{{task.id}}" method = "POST">
  			<input type = "text" name= "content" id="content" value = "{{task.content}}">
             <input type = "submit" value="Add Task">
-
+```
 
 
 # Findings/reflection
