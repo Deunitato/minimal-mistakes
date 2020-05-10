@@ -180,9 +180,7 @@ Update our else method:
             return render_template('index.html', tasks = tasks) # parse it as parameters
 ```
 Add Jinja2 into our index.html:
-```
-{% for task in taks %}
-```
+![Flask_2.PNG]({{site.baseurl}}/img/Flask_2.PNG)
 From our prev example excerpt:
 ```
             <table>
@@ -191,7 +189,7 @@ From our prev example excerpt:
                    <th>Added</th>
                    <th>Actions</th>
                 </tr>
-                {% for task in taks %}
+                ![Flask_2.PNG]({{site.baseurl}}/img/Flask_2.PNG)
                 <tr>
                 	<td>{{tasl.content}}</td>
                     <td>{{task.date_created.date()}}</td>
@@ -227,7 +225,56 @@ From our prev example excerpt:
             except:
             	return 'There was a prob deleting the task'
 ```
+3. Update our html file
 
+`<a href = ""> Delete </a>`
+
+edit it to
+
+`<a href = "/delete/{{task.id}}"> Delete </a>`
+
+
+## Update
+1. Add a new route for Update
+
+`@app.route('/update/<int:id>', methods = ['GET', 'POST'])`
+
+2. Create our method
+```
+		def update(id):
+        	task = Todo.query.get_or_404(id) # get the task
+			if request.method == 'POST':
+				#Update logic here
+                task.content = request.form['content'] 
+               try:
+                db.session.commit()
+                return redirect('/')
+            except:
+            	return 'There was a prob update' 
+                
+            else:
+            	return render_template('update.html', task=task)
+ ```           
+the task
+
+3. Update our html file
+
+`<a href = ""> Update </a>`
+
+edit it to
+
+`<a href = "/update/{{task.id}}"> Delete </a>`
+
+
+4. Create a new update.html to serve the update
+
+> Hint: We can copy the form from the index.html
+```
+		<form action="/update/{{task.id}}" method = "POST">
+ 			<input type = "text" name= "content" id="content" value = "{{task.content}}">
+            <input type = "submit" value="Add Task">
+         </form>
+```
 
 
 # Findings/reflection
