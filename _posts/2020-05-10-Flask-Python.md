@@ -275,6 +275,7 @@ edit it to
 		<form action="/update/{{task.id}}" method = "POST">
  			<input type = "text" name= "content" id="content" value = "{{task.content}}">
             <input type = "submit" value="Add Task">
+         </form>
 ```
 
 
