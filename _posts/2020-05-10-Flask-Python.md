@@ -62,21 +62,16 @@ Running this will allow us to start a webpage that says "Hello world" in `localh
 ## Template inheritence
 - Creating a master that is a skeleton of what each page should look like and insert only code where we need. 
 - Ensures that we only need to write what is relevant
+1. Create skeleton `base.html`
+Under head - 
+Jinja2 syntax: {% block head %}{% endblock %}
+
+Under body -
+Jinja2 syntax: {% block body %}{% endblock %}
 
 - This will specify where we are going to fill up the infomation using other html files
 
-2. Change our index.html
 
-		{% extends 'base.html' %} <! –– Extending from our skeleton-->
-        
-        {% block head %}
-        <h1>Template</h1>
-        
-        {% endblock %}
-        
-        {% block body %}
-        
-        {% endblock %}
 
 
 - We do not need to repeat ourselves each time 
