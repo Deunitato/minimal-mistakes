@@ -182,25 +182,7 @@ Update our else method:
 Add Jinja2 into our index.html:
 ![Flask_2.PNG]({{site.baseurl}}/img/Flask_2.PNG)
 From our prev example excerpt:
-```
-            <table>
-            	<tr>
-                   <th>Task</th>
-                   <th>Added</th>
-                   <th>Actions</th>
-                </tr>
-                ![Flask_2.PNG]({{site.baseurl}}/img/Flask_2.PNG)
-                <tr>
-                	<td>{{tasl.content}}</td>
-                    <td>{{task.date_created.date()}}</td>
-                    <td>
-                    	<a href = ""> Delete </a>
-                        <br>
-                        <a href = "">Update</a>
-                    </td>
-                 </tr>
-              </table>
-```
+![Flask_3.PNG]({{site.baseurl}}/img/Flask_3.PNG)
 
 > The creation is now done, we can create task now
 
