@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 Another part of my internship is to learn flask for python. Apparently we need to be know abit of html,css and of course python. Although python is not my main language, I do have some sort of knowledge of it. (Although my python class are not the best)
 
