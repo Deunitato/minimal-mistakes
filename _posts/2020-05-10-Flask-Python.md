@@ -31,7 +31,7 @@ We can see the (env) that signifies that we are in virtual enviorment
 Sample flask application:
 
 app.py:
-
+```
       from flask import Flask
 
       app = Flask(__name__) #reference this file
@@ -42,7 +42,7 @@ app.py:
 
       if __name__ == "__main__":
           app.run(debug=True) #debug will be true
-    
+ ```   
 
 Running this will allow us to start a webpage that says "Hello world" in `localhost:5000`
 
@@ -51,9 +51,10 @@ Running this will allow us to start a webpage that says "Hello world" in `localh
 1. import `render_template`
 
 2. Change the index() function:
-
+```
 		def index():
            return render_template('index.html')
+```
 3. Create an index.html
 
 
