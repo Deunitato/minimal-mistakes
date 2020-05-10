@@ -227,49 +227,6 @@ From our prev example excerpt:
             except:
             	return 'There was a prob deleting the task'
 ```
-3. Update our html file
-
-`<a href = ""> Delete </a>`
-
-edit it to
-
-`<a href = "/delete/{{task.id}}"> Delete </a>`
-
-
-## Update
-1. Add a new route for Update
-
-`@app.route('/update/<int:id>', methods = ['GET', 'POST'])`
-
-2. Create our method
-```
-		def update(id):
-        	task = Todo.query.get_or_404(id) # get the task
-			if request.method == 'POST':
-				#Update logic here
-                task.content = request.form['content'] 
-               try:
-                db.session.commit()
-                return redirect('/')
-            except:
-            	return 'There was a prob update' 
-                
-            else:
-            	return render_template('update.html', task=task)
- ```           
-the task'
-
-3. Update our html file
-
-`<a href = ""> Update </a>`
-
-edit it to
-
-`<a href = "/update/{{task.id}}"> Delete </a>`
-
-
-4. Create a new update.html to serve the update
-
 
 
 
