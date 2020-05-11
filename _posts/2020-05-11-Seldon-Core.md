@@ -286,3 +286,48 @@ Methods provided:
 - `transform-output`
 - `route`
 - `aggregate`
+
+```
+from seldon_core.seldon_client import SeldonClient
+sc = SeldonClient(deployment_name="mymodel",namespace="seldon", gateway_endpoint="localhost:8003")
+```
+
+this create a `SeldonClient` object with the deployment name `mymodel` and the namespace `seldon`
+
+After that we can make calls using the methods
+
+e.g, make random prediction via ambassador gateway using REST
+
+```
+r = sc.predict(gateway="ambassador",transport="rest")
+print(r)
+```
+
+Sample examples: [Here](https://docs.seldon.io/projects/seldon-core/en/latest/examples/helm_examples.html)
+
+## Python Codes
+[Code](https://docs.seldon.io/projects/seldon-core/en/latest/python/python_component.html)
+
+## Seldon Python Client
+
+```
+from seldon_core.seldon_client import SeldonClient
+sc = SeldonClient(deployment_name="mymodel",namespace="seldon",gateway_endpoint="localhost:8003",gateway="ambassador")
+```
+
+TO make a REST call:
+
+`r = sc.predict(transport="rest")`
+
+- default return type is the protobuff of type "seldonMessage"
+- Can choose to return JSON dictionary
+	- `sc = SeldonClient(..., client_return_type="dict")`
+- Override the default parameter (alt)
+	
+    ```sc = SeldonClient(..., client_return_type="proto")
+    
+  sc.predict(..., client_return_type="dict") # Here we override it
+  ```
+
+### Modules
+[List of modules available in seldon core](https://docs.seldon.io/projects/seldon-core/en/latest/python/api/seldon_core.html)
