@@ -5,7 +5,83 @@ Another part of my internship is to learn flask for python. Apparently we need t
 
 For the first part of the search, I follow a tutorial on youtube in the creation of a "Task Master" web application.
 
-# Starting
+# Udemy Course
+
+## Starting
+- Importing
+`from flask import Flask`
+- Initialising
+`app = Flask(__name__)`
+
+- Standard decorators
+```
+@app.route("/")
+```
+> This decorator tells where the function should return to. Without this, the program will not know where to return the string. 
+/ signifies the route.
+
+
+- Functions
+```
+def welcome():
+	return 'This is first Flask app`
+```
+
+- Running the app `app.run()`
+
+Running `python app.py` will create a server at the local webserver at port 5000
+
+> Note, if we specify the route as "/potato", we have to go into `<ipaddress>/potato` for it to work
+  
+We can do something like this:
+
+```
+@app.route('potato')
+def welcome():
+	return 'Hello world'
+
+@app.route('/')
+def index():
+	return 'This is my root page!'
+
+@app.route('/bob')
+def bob():
+	return 'hi bob'
+    
+app.run()
+```
+
+
+## Handling HTTP request (GET,POST)
+
+By default, we are doing a GET request.
+By using POST, we are sending data to the server
+We can do this by defining a method
+
+```
+@app.route('/method',methods=['GET', 'POST'])
+def method():
+	if request.method == 'POST':
+    	return "This is a post request!"
+    else:
+    	return "This might be a GET request"
+
+```
+
+But we realised that this method does not ask for an input. Thus running the ipadd/method will give us the fetch request.
+
+> We can use a form to allow for input
+
+Note that because we only specify get and post as our methods, other methods would not be allowed.
+
+## Folder Hierachy
+- create a template folder which we can store our html files.
+- CSS stuff should exist in other folders (static)
+
+
+
+# Youtube - Making an todo List
+## Starting
 - Python 
 - Pip
 - Virtualenv
@@ -46,7 +122,7 @@ app.py:
 
 Running this will allow us to start a webpage that says "Hello world" in `localhost:5000`
 
-# Templates and static content
+## Templates and static content
 
 1. import `render_template`
 
@@ -60,7 +136,7 @@ Running this will allow us to start a webpage that says "Hello world" in `localh
 
 - This will load the template instead of a string
 
-## Template inheritence
+### Template inheritence
 - Creating a master that is a skeleton of what each page should look like and insert only code where we need. 
 - Ensures that we only need to write what is relevant
 1. Create skeleton `base.html`
@@ -78,9 +154,9 @@ Including stylesheet:
 
 `<link rel = "stylesheet" href = "{{url_for('<location of css>',  filename = 'css/main.css')}}"`
 
-# SQLAlchemy
+## SQLAlchemy
 
-## Create
+### Create
 
 1. Import 
 
@@ -187,7 +263,7 @@ From our prev example excerpt:
 > The creation is now done, we can create task now
 
 
-## Delete 
+### Delete 
 
 > Remember the id in the ToDo class
 
@@ -216,7 +292,7 @@ edit it to
 `<a href = "/delete/{{task.id}}"> Delete </a>`
 
 
-## Update
+### Update
 1. Add a new route for Update
 
 `@app.route('/update/<int:id>', methods = ['GET', 'POST'])`
@@ -268,3 +344,4 @@ edit it to
 
 # References
 [Youtube tutorial - learn flask for python](https://www.youtube.com/watch?v=Z1RJmh_OqeA)
+[Udemy Flask For Beginners](https://www.udemy.com/course/python-flask-for-beginners/learn/lecture/8281338#content)
