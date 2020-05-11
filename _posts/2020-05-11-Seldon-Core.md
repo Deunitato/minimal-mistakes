@@ -138,4 +138,151 @@ secrets:
 - All prepackaged model servers are built using language wrappers
 - We can build reusable inference server if needed
 
+## Inference Graph
 
+Keycomponents of a deployment yaml
+- Predictors: Each defines a graph and its set of deploymnets. Multiple predictors is useful when splitting traffic between a main graph and a canary
+
+- componentSpecs: A kubernetes PodTemplateSpec, seldon will build into a kubernetes deployment
+
+	- Images from graph
+    - Requirements
+- Graph: Specifies how components are joined together.
+
+
+Complex Example:
+
+```
+apiVersion: machinelearning.seldon.io/v1alpha2
+kind: SeldonDeployment
+metadata:
+  name: seldon-model
+spec:
+  name: test-deployment
+  predictors:
+  - componentSpecs:
+    - spec:
+        containers:
+        - name: step_one
+          image: seldonio/step_one:1.0
+        - name: step_two
+          image: seldonio/step_two:1.0
+        - name: step_three
+          image: seldonio/step_three:1.0
+    graph:
+      name: step_one
+      endpoint:
+        type: REST
+      type: MODEL
+      children:
+          name: step_two
+          endpoint:
+            type: REST
+          type: MODEL
+          children:
+              name: step_three
+              endpoint:
+                type: REST
+              type: MODEL
+              children: []
+    name: example
+    replicas: 1
+```
+
+> Note that the number of containers corresponds to the number of graphs
+>
+> Each graph is a child of a parent
+
+## Deployment
+We can deploy it to kubernetes with `kubectl`
+
+Deploying a `my_ml_deployment.yaml` file:
+
+`kubectl apply -f my_ml_deployment.yaml`
+
+
+We can also check the status by running:
+`kubectl get sdep -o jsonpath='{.items[].status}`
+
+## Testing Model Endpoints
+
+Ways to test:
+- Run model direct on python client
+- Run model as Docker Container
+	- Can be for Language wrapper but not prepackaged inference servers
+- Run SeldonDeployment in Kubernetes Dev Client such as KIND
+	- CLI tools
+    - Python client
+    - Documentation UI
+    
+### Python client
+Only can be use for python language wrapped models
+
+Create a file call `myModel.py`:
+```
+class MyModel:
+    def __init__(self):
+        pass
+
+    def predict(*args, **kwargs):
+        return ["hello, "world"]
+```
+
+We can run by using the microservice CLI that is provided by the [python module](https://docs.seldon.io/projects/seldon-core/en/latest/python/python_module.html)
+
+`seldon-core-microservice MyModel REST --service-type MODEL`
+
+### Docker container
+
+`docker run --rm --name mymodel -p 5000:5000 mymodel:0.1`
+
+Sending request on curl:
+```
+> curl -X POST \
+>     -H 'Content-Type: application/json' \
+>     -d '{"data": { "ndarray": [[1,2,3,4]]}}' \
+>         http://localhost:5000/api/v1.0/predictions
+
+{"data":{"names":[],"ndarray":["hello","world"]},"meta":{}}
+```
+
+> Curl is a tool to transfer data from or to a server using one of the protocols e.g HTTP
+>
+> The command is designed to work without user interaction
+
+### Ambassador
+
+- `http://<ambassadorEndpoint>/seldon/<namespace>/<deploymentName>/api/v1.0/predictions`
+
+	- Location: `<ambassadorEndPoint>`
+	- Seldon deployment name: `<deploymentName>`
+	- namespace: `<namespace>
+
+### Client Implmentation
+
+- We can use curl
+
+`curl -v 0.0.0.0:8003/seldon/mymodel/api/v1.0/predictions -d '{"data":{"names":["a","b"],"tensor":{"shape":[2,2],"values":[0,0,1,1]}}}' -H "Content-Type: application/json"
+`
+
+- This assumes a seldonDeployment `mymodel` with Ambassador exposed on 0.0.0.0:8003
+
+> Ambassador is a open source envoy that provides exposure, security and manages traffic to our kubernetes microservice. [Read More](https://www.getambassador.io/docs/latest/about/why-ambassador/)
+
+## Python Seldon Core Module
+
+Typical:
+`pip install seldon-core`
+
+Google:
+`pip install seldon-core[gcs]`
+
+All dependency:
+`pip install seldon-core[all]`
+
+Methods provided:
+- `predict`
+- `transform-input`
+- `transform-output`
+- `route`
+- `aggregate`
