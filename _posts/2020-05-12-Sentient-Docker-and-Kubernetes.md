@@ -156,3 +156,16 @@ Traceback (most recent call last):
 TypeError: unsupported operand type(s) for *: 'dict' and 'int'
 ```
 > In this example, I have tried to multiply a dictionary with an int hence the type error in line 13
+
+# Sample Json Input data:
+
+1. jsonData:
+`{"jsonData":{"X":4}}`
+
+Note: Using this, functions needs to return a dictionary
+
+2. Normal:
+{"data": {"names": [],"ndarray": [[1]]}}
+
+# Good references
+[Kubernetes cheat sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
