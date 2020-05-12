@@ -103,8 +103,10 @@ Lets say we have updated the code and we want to deploy it back. We need to
 - Rebuilt the image with new tag (We can leave the tag the same and 
 - Repush the image
 - Delete previous deployment yaml file
+`kubectl delete -f deployment.yaml`
 - Change yaml file (If tag changes)
 - Redeploy
+`kubectl apply -f model_deployment.yaml`
 
 
 # Checking Logs/Debugging
