@@ -146,7 +146,7 @@ In the transform model:
     def transform_input(self, X, feature_names):
         logging.info(X)
 
-        return "I am a string";
+        return "This is a string";
 
 ```
 
