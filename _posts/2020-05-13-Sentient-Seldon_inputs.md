@@ -145,19 +145,8 @@ In the transform model:
 ```
     def transform_input(self, X, feature_names):
         logging.info(X)
-        """
-        # This is the code from "jsonData"
-        
-        value = X.get("X") * 2
-        mydict = {}
-        mydict["X"] = value
-        
 
-        return mydict
-        """
-        #Code for strData
-        myStrin = X + " appended in times2"
-        return myStrin;
+        return "I am a string";
 
 ```
 
