@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 Today I have given up on the "ambassador" flop and decided to work on trying out the different input/output of the seldon-core module. 
 This post covers my findings for my experiments.
