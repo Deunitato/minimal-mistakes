@@ -139,7 +139,21 @@ Return output:
 Input data:
 `{"strData":"Hello, I am a string!"}`
 
-- Try to append the string
+In the transform model:
+```
+    def transform_input(self, X, feature_names):
+        logging.info(X)
+
+        return "THis is a trial";
+
+```
+
+Output:
+`{"meta":{},"strData":"THis is a trial"}`
+
+- Works fine
+
+### Try to append the string
 
 In the transform model:
 ```
