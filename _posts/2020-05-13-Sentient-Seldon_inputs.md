@@ -70,7 +70,7 @@ Covered:
 
 # Different Json outputs/Inputs
 
-1. Data as a dictionary
+# Using jsonData
 
 Input file:
 ```
@@ -106,7 +106,7 @@ Output:
 
 As seen in the main code, `X` gives a dictionary because the `jsonData` input specifies a dictionary. I manage to use the `get("X")` function, manipulate it and add it back to an dictionary. 
 
-## Returning more than one values
+### Returning more than one values
 
 
 > Attempting to change the return value
@@ -182,4 +182,72 @@ def transform_input(self, X, feature_names):
         
         return mydict
 ```
+
+Output:
+
+`{"jsonData":{"X":2},"meta":{}}`
+
+> We can return it of different types, does not have to return the same type as what was returned
+>
+> It seems like seldon was able to detect what type it is and change the json file directly.
+
+## binData
+
+Input:
+`{"binData":"b'hi'"}`
+
+> Unsure how to represent bytestring in json, so we use the b symbol
+
+preprocess code:
+```
+    def transform_input(self, X, feature_names):
+        logging.info(X)
+        
+        #Code for strData
+        myStrin = X.decode() + " appended byte string in times2"
+        return myStrin
+```
+
+> This does not work unfortunately, due to the input
+
+Converting the string "Hello \n" to base64 yields SGVsbG8K, so i change the input to
+
+`{"binData":"SGVsbG8K"}`
+
+Output:
+
+`{"meta":{},"strData":"Hello\n appended byte string in times2"}`
+
+### Converting string to bindata
+
+Using the same input, make changes to the main model.
+> Note that the preprocess outputs a string
+
+```
+import base64
+
+...
+...
+
+def predict(self, X, feature_names):
+        """
+        Return a prediction.
+
+        Parameters
+        ----------
+        X : array-like
+        """
+        print("Predict called - will run plus2 function")
+        logging.info(X)
+        encodedBytes = base64.b64encode(X.encode("utf-8"))
+        return encodedBytes
+```
+
+Output:
+
+`{"binData":"U0dWc2JHOEtJR0Z3Y0dWdVpHVmtJR0o1ZEdVZ2MzUnlhVzVuSUdsdUlIUnBiV1Z6TWc9PQ==","meta":{}}`
+
+> Successful conversion of string to bindata
+>
+> Once again, seldon was able to detect the type of data being produce and store it accordingly to the json tag
 
