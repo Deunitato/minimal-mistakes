@@ -208,7 +208,7 @@ preprocess code:
         return myStrin
 ```
 
-> This does not work unfortunately, due to the input
+> This does not work unfortunately, due to the input. Json does not understand b.
 
 Converting the string "Hello \n" to base64 yields SGVsbG8K, so i change the input to
 
@@ -221,7 +221,7 @@ Output:
 ### Converting string to bindata
 
 Using the same input, make changes to the main model.
-> Note that the preprocess outputs a string
+> Note that the preprocess transform method outputs a string
 
 ```
 import base64
@@ -250,4 +250,28 @@ Output:
 > Successful conversion of string to bindata
 >
 > Once again, seldon was able to detect the type of data being produce and store it accordingly to the json tag
+
+# Trying new methods
+
+```
+const (
+	UNKNOWN_TYPE       PredictiveUnitType = "UNKNOWN_TYPE"
+	ROUTER             PredictiveUnitType = "ROUTER"
+	COMBINER           PredictiveUnitType = "COMBINER"
+	MODEL              PredictiveUnitType = "MODEL"
+	TRANSFORMER        PredictiveUnitType = "TRANSFORMER"
+	OUTPUT_TRANSFORMER PredictiveUnitType = "OUTPUT_TRANSFORMER"
+)
+```
+
+## Transport_Output
+
+
+### Failed attempts
+- Tried to use both input and output in the same file, doesnt work.
+- Tried to only have output as its own file. Doesnt work
+
+> Found out that yaml file output must be change
+- Works
+
 
