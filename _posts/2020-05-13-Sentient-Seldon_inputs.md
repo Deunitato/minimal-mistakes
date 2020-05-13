@@ -151,7 +151,7 @@ In the transform model:
 Output:
 `{"meta":{},"strData":"THis is a trial"}`
 
-- Works fine
+> Works fine
 
 ### Try to append the string
 
@@ -159,8 +159,9 @@ In the transform model:
 ```
     def transform_input(self, X, feature_names):
         logging.info(X)
+        mystr = X + "appended at times2"
 
-        return "This is a string";
+        return mystr;
 
 ```
 
