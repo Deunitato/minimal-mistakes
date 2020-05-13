@@ -154,3 +154,17 @@ In the transform model:
 
 - I appended the string "appended in times2" to x before returning it
 
+### Attempting to parse in a string and return a dictionary
+
+- Using the same input
+
+Preprocess model:
+```
+def transform_input(self, X, feature_names):
+        logging.info(X)
+        mydict = {}
+        mydict["X"] = 2
+        
+        return mydict
+```
+
