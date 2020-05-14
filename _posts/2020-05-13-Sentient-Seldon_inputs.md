@@ -5,6 +5,7 @@ Today I have given up on the "ambassador" flop and decided to work on trying out
 This post covers my findings for my experiments.
 
 > Health/Status liveness probe yaml file
+
 ```
 apiVersion: machinelearning.seldon.io/v1alpha2
 kind: SeldonDeployment
@@ -274,29 +275,8 @@ const (
 > Found out that yaml file output must be change
 - Works
 
-Deployment.yaml:
+Deployment.yaml's graph snippet:
 ```
-apiVersion: machinelearning.seldon.io/v1alpha2
-kind: SeldonDeployment
-metadata:
-  name: seldon-model-preprocess
-  labels:
-    model_name: times2-plus2
-    api_type: microservice
-    microservice_type: ai
-spec:
-  name: times2-plus2
-  predictors:
-  - componentSpecs:
-    - spec:
-        containers:
-        - name: model
-          image: gcr.io/science-experiments-divya/plus2:0.2.0
-          imagePullPolicy: Always
-        - name: preprocess
-          image: gcr.io/science-experiments-divya/times2:preprocess-0.3.3
-        imagePullSecrets: 
-          - name: gcr-json-key
     graph:
       name: preprocess
       type: OUTPUT_TRANSFORMER
