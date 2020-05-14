@@ -395,5 +395,79 @@ class times2(object):
 Output data:
 `{"data":{"names":["t:0"],"ndarray":[[10]]},"meta":{}}`
 
+## Changing of input
+Input - Multiple data:
+
+`{"data": {"names": [],"ndarray": [[5],[2]]}}`
+Using this will not work
+
+Output:
+`{"data": {"names": [],"ndarray": [[5],[2]]}}`
+
+
+Changing the code in combiner.py:
+
+```
+def aggregate(self, Xs, features_names=None):
+        """average out the probabilities from multiple classifier and return that as a result"""
+        # In this case we return the larger
+        logging.info("Char's Logging (Aggregate):"+ str(Xs))
+        #Assuming that xs is an array of arrays
+        count = 0
+        model1 = Xs[0].tolist()
+        model2 = Xs[1].tolist()
+        listoflargeNumber = []
+
+        for x in model1:
+            if(x > model2[count]):
+                listoflargeNumber.append(x)
+            elif (x<model2[count]):
+                listoflargeNumber.append(model2[count])
+            else: #they are both equal
+                listoflargeNumber.append(0)
+            count = count + 1
+
+        
+        return listoflargeNumber
+```
+
+> Testing the data we realised that the combiner extracts it into a fix number of 2 arrays which can be access via using Xs[0] and Xs[1]
+
+Depending on the input, these two array can hold a list of values or just one value.
+
+In our second example of multiple input, we have `{"data": {"names": [],"ndarray": [[5],[2],[3]]}}` as the input.
+
+Output:
+
+`{"data":{"names":[],"ndarray":[[10],0,[6]]},"meta":{}}`
+
+### jsonData
+
+- This works the same with JsonData
+
+
+Input:`{"jsonData":{"X":5, "Y": 6}}`
+
+Aggregate code snippet
+
+```
+        model1 = Xs[0]
+        model2 = Xs[1]
+        mydict = {}
+        assert (len(model1) == len(model2), "Dictionary size must be the same" )
+
+        for (k,v), (k2,v2) in zip(model1.items(), model2.items()):
+            if(v > v2):
+                mydict[k] = v
+            elif (v < v2):
+                mydict[k2] = v2
+            else: #they are both equal
+                mydict[k] = 0
+        
+        return mydict
+```
+
 #### Notes
-- Aggregate seems to work only for data
+- Aggregate seems to work only for json type data
+
+
