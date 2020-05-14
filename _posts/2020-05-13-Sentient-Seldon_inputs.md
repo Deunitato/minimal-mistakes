@@ -75,9 +75,8 @@ Covered:
 
 Input file:
 
-```
-{"jsonData":{"X":4}}
-```
+`{"jsonData":{"X":4}}`
+
 
 Code for model:
 ```
@@ -100,9 +99,9 @@ Code for model:
 > This is the predict function as predefined by the seldon-core module. This function will run when /predict is used as the endpoint
 
 Output:
-```
-{"jsonData":{"X":10},"meta":{}}
-```
+
+`{"jsonData":{"X":10},"meta":{}}`
+
 
 > The output returns 6 because it actually goes through a preprocessor which multiply the data by 2 before the main model adds it by 2
 
