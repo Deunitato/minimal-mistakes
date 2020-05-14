@@ -274,4 +274,146 @@ const (
 > Found out that yaml file output must be change
 - Works
 
+Deployment.yaml:
+```
+apiVersion: machinelearning.seldon.io/v1alpha2
+kind: SeldonDeployment
+metadata:
+  name: seldon-model-preprocess
+  labels:
+    model_name: times2-plus2
+    api_type: microservice
+    microservice_type: ai
+spec:
+  name: times2-plus2
+  predictors:
+  - componentSpecs:
+    - spec:
+        containers:
+        - name: model
+          image: gcr.io/science-experiments-divya/plus2:0.2.0
+          imagePullPolicy: Always
+        - name: preprocess
+          image: gcr.io/science-experiments-divya/times2:preprocess-0.3.3
+        imagePullSecrets: 
+          - name: gcr-json-key
+    graph:
+      name: preprocess
+      type: OUTPUT_TRANSFORMER
+      endpoint:
+        type: REST
+      children: 
+      - name: model
+        type: MODEL
+        endpoint:
+          type: REST
+    name: times2-plus2-pod
+    replicas: 1
+```
 
+Preprocess:
+
+```
+def transform_output(self, X, feature_names):
+        logging.info(X)
+        return "It has transformed, the old was " + X
+
+```
+
+# Combiners
+
+Good example of Combiner: https://github.com/Deunitato-sentient/seldon-core/tree/master/examples/combiners/spam_clf_combiner
+
+Following the example, I will attempt to create a program that makes use of combiners.
+
+Containers:
+- 2 sub Models
+- 1 Combiner
+
+Structure:
+```
+subModel1 ->  ---------
+			  |Combiner|
+subModel2 ->   --------
+```
+
+subModel1 -> Attempt to + 2
+subModel2 -> Attempt to *2
+
+Input:
+`{"data": {"names": [],"ndarray": [[5]]}}`
+- Only this works
+- Tried JsonData but failed
+
+Graph for yaml deploy file:
+```
+graph:
+        name: combiner
+        type: COMBINER
+        endpoint:
+          type: REST
+        children: 
+        - name: subprocess-times2
+          type: MODEL
+          endpoint:
+            type: REST
+        - name: subprocess-plus2
+          type: MODEL
+          endpoint:
+            type: REST
+    name: times2-plus2-pod
+    replicas: 1
+```
+
+combiner.py:
+
+```
+class combiner(object):
+
+    def aggregate(self, Xs, features_names=None):
+        """average out the probabilities from multiple classifier and return that as a result"""
+        # In this case we return the larger
+        logging.info(Xs)
+        if (Xs[1] > Xs[0] ):
+            larger = Xs[1]
+        else:
+            larger = Xs[0]
+        
+        return larger
+
+```
+
+> The docker file must change to type combiner
+
+
+
+plus2.py:
+
+```
+class plus2(object):
+  def predict(self, X, feature_names):
+          """
+          Return a prediction.
+
+          Parameters
+          ----------
+          X : array-like
+          """
+          print("Predict called - will run plus2 function")
+          logging.info(X)
+
+          return X + 2
+```
+
+times2.py:
+```
+class times2(object):
+    def predict(self, X, features_names):
+        logging.info(X)
+        return X*2
+```
+Output data:
+`{"data":{"names":["t:0"],"ndarray":[[10]]},"meta":{}}`
+
+#### Notes
+- Aggregate seems to work only for data
