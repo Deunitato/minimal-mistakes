@@ -202,7 +202,34 @@ Changed the return type to dictionary
 
 > Successful data sent
 
+```
+def predict_raw(self, X):
+        """
+        Return a prediction.
 
+        Parameters
+        ----------
+        X : array-like
+        """
+        print("Predict called - will run plus2 function")
+        logging.info("Char's log (model): " + str(X))
+        #myStrin = X.decode() + " appended byte string in times2"
+        """
+        data = request.get("data", {}).get("ndarray")
+        if data:
+            mult_types_array = np.array(data, dtype=object)
+        value = X.get("X") + 2
+        
+        
+        return "The return value is " + str(value)
+        """
+        data = X.get("data").get("X")
+        value = int(data) + 2
+
+        mydict = {}
+        mydict["tree"] = value
+        return mydict
+```
 
 # Version History
 - 0.1: Base code
