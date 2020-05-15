@@ -83,6 +83,88 @@ Using multipart:
 
 # Metrics
 
+Prerequsites:
+- Installation of helm
+- Prometheous
+
+## Installing helm (WSL)
+```
+# Download the install shell script
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+
+# Allow to Run
+chmod 700 get_helm.sh
+# Install
+./get_helm.sh
+
+# Confirm it works
+$helm version
+    version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", 		GoVersion:"go1.13.5"}
+```
+
+`helm init`
+
+## Setting up helm
+
+
+1. Installing the repo
+
+`SELDON_VERSION=v1.1.0`
+`SELDON_URL=https://github.com/SeldonIO/seldon-core.git`
+
+`git clone $SELDON_URL --branch $SELDON_VERSION`
+
+2.Now read the service account:
+
+`kubectl create serviceaccount --namespace kube-system tiller`
+`
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller`
+
+`kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'`
+
+3. Test if tiller is working
+
+`helm version`
+
+If running the command show "tiller has not be installed" and you have com, check resetting helm
+
+3. Installing the chart using helm
+- Ensure that the location is not in the repo (Confirm with Divya)
+
+`helm install ./seldon-core-analytics --repo https://storage.googleapis.com/seldon-charts --na
+mespace seldon-system`
+
+4. Starting the server
+
+`kubectl port-forward 
+svc/filled-umbrellabird-grafana 3000:80 -n seldon-system`
+
+Note: You can only do a localhost access (Understand how the structure of the application suppose to look like, users are not suppose to be able to access the endpoint)
+
+5. Access the server
+`localhost:3000` on your host web browser
+
+
+## Resetting helm
+
+Sometimes you might encounter a problem whereby the console might claim that you are missing`tiller` but attempting to install it might cause the console to claim that it has already been install.
+To fix this, you have to reset your helm installation using the following:
+
+
+Try deleting your cluster tiller:
+
+```
+kubectl get all --all-namespaces | grep tiller
+kubectl delete deployment tiller-deploy -n kube-system
+kubectl delete service tiller-deploy -n kube-system
+kubectl get all --all-namespaces | grep tiller
+```
+
+Initialise it again:
+
+
+`helm init`
+
 
 
 
