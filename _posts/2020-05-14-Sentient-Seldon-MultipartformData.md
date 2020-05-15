@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 Apart from accepting in Json, uploading data through multipartform is useful thus this post is dedicated into researching more about this new way of uploading and sending data.
 # Multipart Form Data
@@ -65,12 +65,18 @@ Using multipart:
 
 -> Doesnt work.. sighs
 
-### Without using byteString
+### Change code to just push out data without manupilation
 - Change the code in such that it only returns the value
+- Send a textfile instead of image
+- The server recieves but returns an error
 
 ![kube-multiform-8.PNG]({{site.baseurl}}/img/kube-multiform-8.PNG)
 
+- Sent image
+> Failed without using `binData`
+![kube-multiform-9.PNG]({{site.baseurl}}/img/kube-multiform-9.PNG)
 
+> Console still throw errors
 
 # Metrics
 
