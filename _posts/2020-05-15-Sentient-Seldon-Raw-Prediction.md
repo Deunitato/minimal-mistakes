@@ -108,9 +108,11 @@ spec:
 Log file:
 
 Input: `{"data": {"X": 10}}`
+
+Log output:
 `INFO:  Char's log (model): {'data': {'X': 10}}`
 
-## Model - V0.2.1
+## Model - V0.2
 
 Updated predict_raw snippet:
 
@@ -141,6 +143,48 @@ Traceback (most recent call last): File "/usr/local/lib/python3.7/site-packages/
 ```
 
 Returned server error: 500
+
+Failed test input:
+1. `{"data":{"X":10}, "meta":{"metrics":[]}}`
+
+2. 
+```
+			{"data":{"X":10}, "meta":{"metrics":[
+            {"type": "COUNTER", "key": "mycounter", "value": 1}, 
+            {"type": "GAUGE", "key": "mygauge", "value": 100},   
+            {"type": "TIMER", "key": "mytimer", "value": 20.2}]
+            }}
+```
+3. `{"data":{"X":10}, "meta":{"metrics": {"type": 1}}}`
+4. `{"data":{"X":10}, "meta":{"metrics": []}}`
+5. `{"data":{"X":10}, "meta":{"metrics": "some metric"}}`
+6. `{"data":{"X":10},"meta":{}}`
+
+
+(0.2.2)
+plus2 code snippet:
+
+```
+        x = json.loads(X)
+        data = x.get("data").get("X")
+        value = int(data) + 2
+        return value
+```
+> Attempt to load it as a Json file instead
+
+- Fails
+
+```
+line 2447, in wsgi_app response = self.full_dispatch_request() File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1952, in full_dispatch_request rv = self.handle_user_exception(e) File "/usr/local/lib/python3.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function return cors_after_request(app.make_response(f(*args, **kwargs))) File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1821, in handle_user_exception reraise(exc_type, exc_value, tb) File "/usr/local/lib/python3.7/site-packages/flask/_compat.py", line 39, in reraise raise value File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request rv = self.dispatch_request() File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request return self.view_functions[rule.endpoint](**req.view_args) File "/usr/local/lib/python3.7/site-packages/seldon_core/wrapper.py", line 50, in Predict user_model, requestJson, seldon_metrics File "/usr/local/lib/python3.7/site-packages/seldon_core/seldon_methods.py", line 83, in predict response = user_model.predict_raw(request) File "/app/plus2.py", line 66, in predict_raw x = json.loads(X) File "/usr/local/lib/python3.7/json/__init__.py", line 341, in loads raise TypeError(f'the JSON object must be str, bytes or bytearray, ' TypeError: the JSON object must be str, bytes or bytearray, not dict
+```
+
+> Suspicion that X is a dict
+
+(0.2.3)
+
+- Added metric function
+
+
 
 # Version History
 - 0.1: Base code
