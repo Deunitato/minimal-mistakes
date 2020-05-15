@@ -105,12 +105,44 @@ spec:
 > More than one values
 ![kube_raw_3.PNG]({{site.baseurl}}/img/kube_raw_3.PNG)
 
+Log file:
 
+Input: `{"data": {"X": 10}}`
+`INFO:  Char's log (model): {'data': {'X': 10}}`
 
-## Model - V0.1.2
+## Model - V0.2.1
 
+Updated predict_raw snippet:
+
+Input: `{"data":{"X":10}}`
+
+(0.2.1)
+```
+def predict_raw(self, X):
+        """
+        Return a prediction.
+
+        Parameters
+        ----------
+        X : array-like
+        """
+        print("Predict called - will run plus2 function")
+        logging.info("Char's log (model): " + str(X))
+        
+        data = X.get("data", {}).get("X")
+        value = int(data) + 2
+        return value
+```
+
+> There was an error with this
+
+```
+Traceback (most recent call last): File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app response = self.full_dispatch_request() File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1952, in full_dispatch_request rv = self.handle_user_exception(e) File "/usr/local/lib/python3.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function return cors_after_request(app.make_response(f(*args, **kwargs))) File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1821, in handle_user_exception reraise(exc_type, exc_value, tb) File "/usr/local/lib/python3.7/site-packages/flask/_compat.py", line 39, in reraise raise value File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request rv = self.dispatch_request() File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request return self.view_functions[rule.endpoint](**req.view_args) File "/usr/local/lib/python3.7/site-packages/seldon_core/wrapper.py", line 50, in Predict user_model, requestJson, seldon_metrics File "/usr/local/lib/python3.7/site-packages/seldon_core/seldon_methods.py", line 84, in predict handle_raw_custom_metrics(response, seldon_metrics, is_proto) File "/usr/local/lib/python3.7/site-packages/seldon_core/seldon_methods.py", line 48, in handle_raw_custom_metrics metrics = msg.get("meta", {}).get("metrics", []) AttributeError: 'int' object has no attribute 'get'
+```
+
+Returned server error: 500
 
 # Version History
 - 0.1: Base code
 - 0.1.1: Input-output, changes all methods to raw
-- 0.1.2: Modification of data in raw methods
+- 0.2.0 - 0.2.1: Modification of data in raw methods
