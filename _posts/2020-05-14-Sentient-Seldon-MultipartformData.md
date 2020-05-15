@@ -78,6 +78,9 @@ Using multipart:
 
 > Console still throw errors
 
+![kube-multiform-11.png]({{site.baseurl}}/img/kube-multiform-11.png)
+
+
 # Metrics
 
 
