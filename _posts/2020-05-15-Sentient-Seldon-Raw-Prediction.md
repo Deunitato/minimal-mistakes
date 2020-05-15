@@ -184,9 +184,27 @@ line 2447, in wsgi_app response = self.full_dispatch_request() File "/usr/local/
 
 - Added metric function
 
+> No difference
+
+
+Input:
+`{"data":{"X":10},"meta":{"metrics":{"type": 1, "counter": 3}}}`
+
+Error
+```
+Traceback (most recent call last): File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app response = self.full_dispatch_request() File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1952, in full_dispatch_request rv = self.handle_user_exception(e) File "/usr/local/lib/python3.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function return cors_after_request(app.make_response(f(*args, **kwargs))) File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1821, in handle_user_exception reraise(exc_type, exc_value, tb) File "/usr/local/lib/python3.7/site-packages/flask/_compat.py", line 39, in reraise raise value File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request rv = self.dispatch_request() File "/usr/local/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request return self.view_functions[rule.endpoint](**req.view_args) File "/usr/local/lib/python3.7/site-packages/seldon_core/wrapper.py", line 78, in TransformInput user_model, requestJson, seldon_metrics File "/usr/local/lib/python3.7/site-packages/seldon_core/seldon_methods.py", line 198, in transform_input handle_raw_custom_metrics(response, seldon_metrics, is_proto) File "/usr/local/lib/python3.7/site-packages/seldon_core/seldon_methods.py", line 51, in handle_raw_custom_metrics seldon_metrics.update(metrics) File "/usr/local/lib/python3.7/site-packages/seldon_core/metrics.py", line 79, in update metrics_type = metrics.get("type", "COUNTER") AttributeError: 'str' object has no attribute 'get'
+```
+
+(0.2.4)
+
+Changed the return type to dictionary
+![kube_raw_4.PNG]({{site.baseurl}}/img/kube_raw_4.PNG)
+
+> Successful data sent
+
 
 
 # Version History
 - 0.1: Base code
 - 0.1.1: Input-output, changes all methods to raw
-- 0.2.0 - 0.2.1: Modification of data in raw methods
+- 0.2s: Modification of data in raw methods
