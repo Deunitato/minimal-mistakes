@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 Here I am going to do the testing of the raw prediction method that is avaliable in Seldon
 
