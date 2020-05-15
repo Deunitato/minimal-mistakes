@@ -91,13 +91,26 @@ spec:
 ```
 
 # Attempt to use predict-raw
-- Changes only the model
 
-Input:
-`{"jsonData":{"X":10},"meta":{}}`
+## V0.1.1 (both)
+- Successful sending of data
+
+> Predefined json
+![kube_raw_1.PNG]({{site.baseurl}}/img/kube_raw_1.PNG)
+
+
+> Own Json Type
+![kube_raw_2.PNG]({{site.baseurl}}/img/kube_raw_2.PNG)
+
+> More than one values
+![kube_raw_3.PNG]({{site.baseurl}}/img/kube_raw_3.PNG)
+
+
+
+## Model - V0.1.2
 
 
 # Version History
 - 0.1: Base code
 - 0.1.1: Input-output, changes all methods to raw
-
+- 0.1.2: Modification of data in raw methods
