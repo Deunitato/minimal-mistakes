@@ -27,7 +27,7 @@ Grafana:
 `kubectl port-forward svc/seldon-core-analytics-grafana 3000:80 -n seldon-system`
 
 Prometheus:
-
+`kubectl port-forward svc/seldon-core-analytics-prometheus-seldon 3001:80 -n seldon-system`
 
 
 4. Open browser and run `localhost:3000`
