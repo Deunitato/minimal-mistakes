@@ -115,6 +115,17 @@ Init again:
 Currently my assumption of the workflow is the seldon-core exposes some metrics which would be scaped by the prometheus which acts as a back-end. The user can then define multiple queries (PromQL) to let the prometheus know what it needs to do and to plot a graph for it. Users can then make use of these graph to be shown in front-end applications such as grafana.
 
 
+Provided metrics by seldon:
+Prediction Requests
+
+`seldon_api_executor_server_requests_seconds_(bucket,count,sum)` : Requests to the service orchestrator from an ingress, e.g. API gateway or Ambassador
+
+`seldon_api_executor_client_requests_seconds_(bucket,count,sum)` : Requests from the service orchestrator to a component, e.g., a model
+
+References:
+[Seldon-core metrics docs](https://docs.seldon.io/projects/seldon-core/en/latest/analytics/analytics.html)
+
+
 ## PromQL
 
 There are 4 main parts to the metrics:
@@ -203,7 +214,6 @@ Grafana here is making use of a metric through prometheus.
 
 # My attempts
 
-## #1 Using postman
 Using a currently deployed model : (input-output with transformer and model)
 
 Deployment name:
@@ -217,6 +227,12 @@ model	 Running	gcr.io/science-experiments-divya/plus2:input-output	0	View logs
 seldon-container-engine	 Running	seldonio/seldon-core-executor:1.1.0	0	View logs
 transformer	 Running	gcr.io/science-experiments-divya/times2:input-output	0	View logs
 ```
+
+Grafana Settings:
+![prome_7.PNG]({{site.baseurl}}/img/prome_7.PNG)
+
+
+## #1 Using postman
 
 Input:
 `{"jsonData": {"X" : 4 }}`
@@ -377,4 +393,30 @@ Metrics:
 sum(rate(seldon_api_executor_client_requests_seconds_count{model_name=~"$model_name",model_version=~"$model_version",model_image=~"$model_image",predictor_name=~"$predictor",predictor_version=~"$version"}[5s])) by (model_name,predictor_name,predictor_version,model_image,model_version,service)
 ```
 
+![prome_6.PNG]({{site.baseurl}}/img/prome_6.PNG)
+
+Sample metric:
+```promQL
+histogram_quantile(0.5, sum(rate(seldon_api_executor_client_requests_seconds_bucket{service=~"/Predict", model_image=~"$model_image",predictor_name=~"$predictor",predictor_version=~"$version",model_name=~"$model_name",model_version=~"$model_version"}[20s])) by (predictor_name,predictor_version,model_name,model_image,model_version,le))
+```
+
+> These are prediction request through executor
+
+References:
+[Github Issue](https://github.com/SeldonIO/seldon-core/issues/1729)
+
+
+## #3 Using commands recommended by seldon docs
+
+```
+curl -s http://35.240.217.69:80/seldon/default/seldon-model-preprocess/prometheus | grep seldon_api_executor_server_requests_seconds_count
+```
+
+Responses:
+
+```bash
+seldon_api_executor_server_requests_seconds_count{code="200",deployment_name="seldon-model-preprocess",method="post",predictor_name="times2-plus2-pod",predictor_version="",service="predictions"} 10
+seldon_api_executor_server_requests_seconds_count{code="400",deployment_name="seldon-model-preprocess",method="post",predictor_name="times2-plus2-pod",predictor_version="",service="predictions"} 16
+seldon_api_executor_server_requests_seconds_count{code="500",deployment_name="seldon-model-preprocess",method="post",predictor_name="times2-plus2-pod",predictor_version="",service="predictions"} 1
+```
 
