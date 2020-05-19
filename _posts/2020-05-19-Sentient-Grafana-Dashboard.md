@@ -235,7 +235,19 @@ Grafana Settings:
 ## #1 Using postman
 
 Input:
-`{"jsonData": {"X" : 4 }}`
+```json
+{"jsonData": {"X" : 4 }}
+```
+
+Output:
+```json
+{
+    "jsonData": {
+        "X": 4
+    },
+    "meta": {}
+}
+```
 
 This what it is seen in the grafana
 ![prome_3.PNG]({{site.baseurl}}/img/prome_3.PNG)
