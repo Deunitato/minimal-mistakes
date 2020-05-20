@@ -17,8 +17,7 @@ git clone $SELDON_URL --branch $SELDON_VERSION
 
 - Ensure you are in the right directory (Helm-charts)
 
-`helm install --name seldon-core-analytics ./seldon-core-analytics --repo https://stora
-ge.googleapis.com/seldon-charts --namespace seldon-system`
+`helm install --name seldon-core-analytics ./seldon-core-analytics --repo https://storage.googleapis.com/seldon-charts --namespace seldon-system`
 
 
 3. Start the interface on local host:
