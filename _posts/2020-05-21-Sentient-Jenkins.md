@@ -108,6 +108,8 @@ Security:
 
 ![jenkins_2.PNG]({{site.baseurl}}/img/jenkins_2.PNG)
 
+> It is found that creating app is not needed, just jump straight into setting up authentication under jenkins
+
 5. Set up authentication in jenkins
 - From the side panel > Credentials > System 
 - Click on Global Credential
@@ -149,6 +151,8 @@ Configure > Build trigger > GitHub hook trigger for GITScm polling
 - At the side panel > Build now
 ![jenkins_5.PNG]({{site.baseurl}}/img/jenkins_5.PNG)
 
+### Resource
+[IBM tutorial](https://developer.ibm.com/technologies/devops/tutorials/configure-a-cicd-pipeline-with-jenkins-on-kubernetes/)
 
 # Problems
 
