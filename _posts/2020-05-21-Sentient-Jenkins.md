@@ -148,4 +148,4 @@ e.g `http://34.87.13.193:8080/github-webhook/`
 - Tried to apply one setting at a time -> Works
 
 ## Webhook is unable to push
--
+- Possibly repo is in private
