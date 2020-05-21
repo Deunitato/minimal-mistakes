@@ -431,3 +431,38 @@ seldon_api_executor_server_requests_seconds_count{code="400",deployment_name="se
 seldon_api_executor_server_requests_seconds_count{code="500",deployment_name="seldon-model-preprocess",method="post",predictor_name="times2-plus2-pod",predictor_version="",service="predictions"} 1
 ```
 
+> Warning: It was found that newly deployed deployments made after creation of this would not work/show up in the dashboard for seldon
+
+## Issue regarding Grafana Dashboard not updating
+
+Certain 
+
+[Issue link](https://github.com/SeldonIO/seldon-core/issues/1854)
+
+
+
+# StackDriver
+
+Currently as per research, there is [no way](https://github.com/grafana/grafana/issues/21370) to show google container's log on Grafana using stackdriver. Stackdriver is only able pass it's metrics into grafana's dashboard.
+
+However, I have encountered problems regarding setting up as well.
+1. All metrics under stackdriver seems to not be able to work (Cannot import)
+2. Lack of documentation (Outdated)
+3. Lack of permissions given
+
+## Changes made
+1. Cluster settings
+- Enabled cloud run for anthos
+- Enable Istios
+- Enable Kubernetes Dashboard
+
+## References:
+[Tried this](https://kubernetes.io/docs/tasks/debug-application-cluster/logging-stackdriver/)
+
+
+#### After changes 1
+[Log base metrics](https://console.cloud.google.com/logs/metrics?authuser=3&project=science-experiments-divya)
+
+[Monitoring](https://console.cloud.google.com/monitoring/dashboards/resourceList/kubernetes?authuser=3&project=science-experiments-divya&timeDomain=1h&resourceType=Cluster&resourceName=cluster-1&labelValues=cluster-1&labelHierarchy=resource.labels.cluster_name:metadata.system_labels.node_name:resource.labels.pod_name:resource.labels.container_name)
+
+
