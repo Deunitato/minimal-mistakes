@@ -109,7 +109,13 @@ Security:
 ![jenkins_2.PNG]({{site.baseurl}}/img/jenkins_2.PNG)
 
 5. Set up authentication in jenkins
-
+- From the side panel > Credentials > System 
+- Click on Global Credential
+- From the side panel > add credentials
+- Type> Kind with password:
+	- Username : github username
+    - password: github password
+    - type: `github`
 
 
 6. Setting up webhook github
@@ -137,6 +143,12 @@ e.g `http://34.87.13.193:8080/github-webhook/`
 	- SCM: `git`
     - Repository url (ending with .git) e.g `https://github.com/Deunitato-sentient/jenkins-pipeline-examples.git`
     - Credential: The github account set up
+
+8. Build the pipeline
+Configure > Build trigger > GitHub hook trigger for GITScm polling
+- At the side panel > Build now
+![jenkins_5.PNG]({{site.baseurl}}/img/jenkins_5.PNG)
+
 
 # Problems
 
