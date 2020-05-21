@@ -108,10 +108,25 @@ Security:
 
 ![jenkins_2.PNG]({{site.baseurl}}/img/jenkins_2.PNG)
 
+5. Set up authentication in jenkins
 
-# Redo
 
-I decided to give up self trying this method and trying to follow this guide [link](https://developer.ibm.com/technologies/devops/tutorials/configure-a-cicd-pipeline-with-jenkins-on-kubernetes/)
+
+6. Setting up webhook github
+
+- Ensure the repo is not private
+Settings > Webhooks > Payload URL
+
+Enter:
+`http://<Jenkins IP>:<Jenkin port>/github-webhook`
+
+e.g `http://34.87.13.193:8080/github-webhook/`
+
+- Ensure that the content-type is application/json
+
+- Check that there is a tick symbol
+
+7. Se
 
 # Problems
 
@@ -122,16 +137,5 @@ I decided to give up self trying this method and trying to follow this guide [li
 
 - Tried to apply one setting at a time -> Works
 
-## Linking kubenetes with jenkins
-
-Configure autho > Google Service account with secret 
-- Generate a new key under kubernetes service account
-
-Output: Jenkins is able to see my seldon-core depo
-
-
-
-
-
-    
-    
+## Webhook is unable to push
+- 
