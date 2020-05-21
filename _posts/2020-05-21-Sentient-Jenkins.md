@@ -126,7 +126,17 @@ e.g `http://34.87.13.193:8080/github-webhook/`
 
 - Check that there is a tick symbol
 
-7. Se
+7. Creation of new project (Jenkins)
+- Set up new project
+- enter new name > Type: pipeline
+
+#### Settings:
+- General > github prkject > project url
+	- e.g `https://github.com/Deunitato-sentient/jenkins-pipeline-examples`
+- Pipeline > Definition: `pipeline script from scm`
+	- SCM: `git`
+    - Repository url (ending with .git) e.g `https://github.com/Deunitato-sentient/jenkins-pipeline-examples.git`
+    - Credential: The github account set up
 
 # Problems
 
@@ -138,4 +148,4 @@ e.g `http://34.87.13.193:8080/github-webhook/`
 - Tried to apply one setting at a time -> Works
 
 ## Webhook is unable to push
-- 
+-
