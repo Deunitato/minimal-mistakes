@@ -79,6 +79,15 @@ In this case, `30bea689180e46d180fbf68de1090158` is the password
 Using the `http://<node-ip>:30000` we are able to access the UI for jenkins
 and start configurations.
 
+- Configure the ip address for jenkins server to be accessible at port `8080`
+
+- Configure the security
+	- Manage jenkins > Configure Global Security > CRFC Protection > Check the enable proxy
+
+
+
+## ** DO not go beyond this point > Skip to next step ** ##
+
 Plugins installed:
 - Github related authourity and pipeline
 - Kubernetes api
@@ -128,6 +137,7 @@ Settings > Webhooks > Payload URL
 Enter:
 `http://<Jenkins IP>:<Jenkin port>/github-webhook`
 
+
 e.g `http://34.87.13.193:8080/github-webhook/`
 
 - Ensure that the content-type is application/json
@@ -153,6 +163,8 @@ Configure > Build trigger > GitHub hook trigger for GITScm polling
 
 ### Resource
 [IBM tutorial](https://developer.ibm.com/technologies/devops/tutorials/configure-a-cicd-pipeline-with-jenkins-on-kubernetes/)
+[Setup tutorial - devopscube](https://devopscube.com/setup-jenkins-on-kubernetes-cluster/)
+[Setup tutorial - phoenixnap ](https://phoenixnap.com/kb/how-to-install-jenkins-kubernetes)
 
 # Problems
 
@@ -165,3 +177,4 @@ Configure > Build trigger > GitHub hook trigger for GITScm polling
 
 ## Webhook is unable to push
 - Possibly repo is in private
+- At the bottom of webhook, there is an option to redeliever
