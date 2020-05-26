@@ -409,11 +409,25 @@ node {
 }
 ```
 
+Return:
+```
+/var/jenkins_home/workspace/multibranch-pipeline-1_master@tmp/durable-42233bfe/script.sh: 1: /var/jenkins_home/workspace/multibranch-pipeline-1_master@tmp/durable-42233bfe/script.sh: docker: not found
+```
+
 
 Resources:
 [Stackoverflow issue #1](https://stackoverflow.com/questions/54573068/pushing-docker-image-through-jenkins), [Google container registry auth Plugin](https://plugins.jenkins.io/google-container-registry-auth/), [Official Jenkins docker page](https://www.jenkins.io/doc/book/pipeline/docker/#custom-registry)
 
 
+#### Installed the following plugins:
+- Docker API	 
+- Docker	 
+- CloudBees Docker Build and Publish	 
+- Loading plugin extensions	 
+
 
 ## Resources:
 [Jenkinsfile to GCR](https://stackoverflow.com/questions/54573068/pushing-docker-image-through-jenkins)
+
+Possible google provided installation:
+[Install](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/jenkins/README.md), [Cloud marketplace](https://console.cloud.google.com/marketplace/kubernetes/config/google/jenkins?version=2.190&project=science-experiments-divya&authuser=3&folder=true&organizationId=true)
