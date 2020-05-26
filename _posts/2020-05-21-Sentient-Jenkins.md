@@ -84,6 +84,7 @@ and start configurations.
 - Configure the security
 	- Manage jenkins > Configure Global Security > CRFC Protection > Check the enable proxy
 
+![jenkins_6.PNG]({{site.baseurl}}/img/jenkins_6.PNG)
 
 
 ## ** DO not go beyond this point > Skip to next step ** ##
@@ -178,3 +179,114 @@ Configure > Build trigger > GitHub hook trigger for GITScm polling
 ## Webhook is unable to push
 - Possibly repo is in private
 - At the bottom of webhook, there is an option to redeliever
+
+# Getting it to work
+
+- The way jenkins work is that the webhook in the github repo will detect any `Jenkinsfile` located inside the repo and will execute it. 
+
+Plugins installed:
+- Blue ocean
+- google container auth
+- docker build step
+- [Kubernetes CLI](https://github.com/jenkinsci/kubernetes-cli-plugin) (And some related kubernetes plugins)
+
+## Docker CLI
+
+### Failed attempt 1
+
+
+Jenkinsfile:
+
+```
+node {
+    def project = 'science-experiments-divya'
+    def app = 'plus2'
+    def tag = 'p2metrics-0.1' //change this to $env.BRANCH_NAME or $env.BUILD_NUMBER
+    def imageTag = 'gcr.io/${project}/${app}:${tag}'
+    checkout scm
+
+    //stages {
+        // stage('Build docker image') {
+        //     steps {
+        //         echo 'Building..'
+        //         echo "Running the script now"
+        //         docker.withRegistry("https://gcr.io", "gcr:credential-id") {
+        //         sh 'docker build --tag gcr.io/science-experiments-divya/plus2:p2metrics-0.1 .'
+        //         sh 'docker push gcr.io/science-experiments-divya/plus2:p2metrics-0.1'
+        //         }
+            
+                
+        //     }
+        // }
+        stage 'initial test'
+        echo 'jenkinsfile is running'
+
+        stage 'Build test'
+        sh("docker build -t ${imageTag} .")
+
+        stage 'Run Go test'
+        sh("docker run ${imageTag} go test")
+
+        stage 'push to gcr'
+        sh("gcloud docker --push ${imageTag}")
+
+        
+        stage "list pods try one"
+        sh("kubectl get pods")
+
+      /*  stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        // stage('K8s commands deployment') {
+        //     steps {
+        //         echo 'Deploying....'
+        //         echo "Running the script2 now"
+        //         sh 'kubectl delete --filename model_deployment.yaml'
+        //         sh 'kubectl apply --filename model_deployment.yaml'
+        //         }
+
+        //     }
+        // }
+        
+
+
+        stage('List pods') {
+            steps{
+                withKubeConfig([credentialsId: 'credentialsId']) {
+                sh("kubectl get pods")
+                } 
+            }
+          }*/
+//    }
+}
+```
+
+> /var/jenkins_home/workspace/multibranch-pipeline-1_master@tmp/durable-fa33915e/script.sh: 1: /var/jenkins_home/workspace/multibranch-pipeline-1_master@tmp/durable-fa33915e/script.sh: docker: not found
+
+## Kubernetes CLI
+
+#### Generating credentials
+```
+# Create a ServiceAccount named `jenkins-robot` in a given namespace.
+$ kubectl -n <namespace> create serviceaccount jenkins-robot
+
+# The next line gives `jenkins-robot` administator permissions for this namespace.
+# * You can make it an admin over all namespaces by creating a `ClusterRoleBinding` instead of a `RoleBinding`.
+# * You can also give it different permissions by binding it to a different `(Cluster)Role`.
+$ kubectl -n <namespace> create rolebinding jenkins-robot-binding --clusterrole=cluster-admin --serviceaccount=<namespace>:jenkins-robot
+
+# Get the name of the token that was automatically generated for the ServiceAccount `jenkins-robot`.
+$ kubectl -n <namespace> get serviceaccount jenkins-robot -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'
+
+
+# Retrieve the token and decode it using base64.
+$ kubectl -n <namespace> get secrets jenkins-robot-token-d6d8z -o go-template --template '{{index .data "token"}}' | base64 -d
+
+```
+
+
+
+## Resources:
+[Jenkinsfile to GCR](https://stackoverflow.com/questions/54573068/pushing-docker-image-through-jenkins)
