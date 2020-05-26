@@ -237,32 +237,6 @@ node {
         stage "list pods try one"
         sh("kubectl get pods")
 
-      /*  stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        // stage('K8s commands deployment') {
-        //     steps {
-        //         echo 'Deploying....'
-        //         echo "Running the script2 now"
-        //         sh 'kubectl delete --filename model_deployment.yaml'
-        //         sh 'kubectl apply --filename model_deployment.yaml'
-        //         }
-
-        //     }
-        // }
-        
-
-
-        stage('List pods') {
-            steps{
-                withKubeConfig([credentialsId: 'credentialsId']) {
-                sh("kubectl get pods")
-                } 
-            }
-          }*/
-//    }
 }
 ```
 
@@ -422,8 +396,93 @@ Resources:
 #### Installed the following plugins:
 - Docker API	 
 - Docker	 
-- CloudBees Docker Build and Publish	 
-- Loading plugin extensions	 
+- CloudBees Docker Build and Publish Loading plugin extensions	 
+
+## Attempt #4
+
+```
+node {
+    def project = 'science-experiments-divya'
+    def app = 'plus2'
+    def tag = 'p2metrics-0.1' //change this to $env.BRANCH_NAME or $env.BUILD_NUMBER
+    def imageTag = '${project}/${app}:${tag}'
+    def registryip = 'https://gcr.io'
+    def DOCKER_FILES_DIR = 'deployment_model'
+    checkout scm
+
+        stage 'initial test'
+        echo 'jenkinsfile is running'
+
+        stage('Initialize'){
+        def dockerHome = tool 'myDocker'
+        env.PATH = "${dockerHome}/bin:${env.PATH}"
+        }
+        
+
+        stage 'Docker test'
+        docker.withRegistry("${registryip}", 'gcr:science-experiments-divya') {
+
+        def customImage = docker.build("${imageTag}")
+
+        /* Push the container to the custom Registry */
+        customImage.push() }
+
+        
+        stage "list pods try one"
+        sh("kubectl get pods")
+
+}
+```
+
+> I also tried to change the path and they gave the same error
+
+Resources:
+[Stackoverflow suggestion](https://stackoverflow.com/questions/44850565/docker-not-found-when-building-docker-image-using-docker-jenkins-container-pipel), [subdirectory path suggestion](https://stackoverflow.com/questions/54309406/how-build-a-dockerfile-in-a-subdirectory-using-a-jenkinsfile)
+
+
+Output:
+```
+Using the ‘stage’ step without a block argument is deprecated
+Entering stage Docker test
+Proceeding
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withDockerRegistry
+$ docker login -u _token -p ******** https://gcr.io
+[Pipeline] // withDockerRegistry
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+
+GitHub has been notified of this commit’s build result
+
+java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:247)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:134)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1029)
+Caused: java.io.IOException: Cannot run program "docker": error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1048)
+	at hudson.Proc$LocalProc.<init>(Proc.java:252)
+	at hudson.Proc$LocalProc.<init>(Proc.java:221)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:936)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:454)
+	at hudson.Launcher$ProcStarter.join(Launcher.java:465)
+	at org.jenkinsci.plugins.docker.commons.impl.RegistryKeyMaterialFactory.materialize(RegistryKeyMaterialFactory.java:101)
+	at org.jenkinsci.plugins.docker.workflow.AbstractEndpointStepExecution2.doStart(AbstractEndpointStepExecution2.java:53)
+	at org.jenkinsci.plugins.workflow.steps.GeneralNonBlockingStepExecution.lambda$run$0(GeneralNonBlockingStepExecution.java:77)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+```
+
+
+
+
 
 
 ## Resources:
