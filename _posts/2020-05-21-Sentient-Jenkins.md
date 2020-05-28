@@ -167,6 +167,21 @@ Configure > Build trigger > GitHub hook trigger for GITScm polling
 [Setup tutorial - devopscube](https://devopscube.com/setup-jenkins-on-kubernetes-cluster/)
 [Setup tutorial - phoenixnap ](https://phoenixnap.com/kb/how-to-install-jenkins-kubernetes)
 
+
+# Installing with helm
+
+`helm install --name=jenkins-helm  stable/jenkins --namespace=jenkins-helm`
+
+NOTES:
+1. Get your 'admin' user password by running:
+  printf $(kubectl get secret --namespace jenkins-helm jenkins-helm -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+2. Get the Jenkins URL to visit by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace jenkins-helm -l "app.kubernetes.io/component=jenkins-master" -l "app.kubernetes.io/instance=jenkins-helm" -o json
+path="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8080
+  kubectl --namespace jenkins-helm port-forward $POD_NAME 8080:8080
+3. Login with the password from step 1 and the username: admin
+
 # Problems
 
 ## Crumb error
@@ -195,7 +210,7 @@ Plugins installed:
 
 ## Docker CLI
 
-### Failed attempt 1
+### Failed attempt 1 - run file pure
 
 
 Jenkinsfile:
@@ -242,7 +257,7 @@ node {
 
 > /var/jenkins_home/workspace/multibranch-pipeline-1_master@tmp/durable-fa33915e/script.sh: 1: /var/jenkins_home/workspace/multibranch-pipeline-1_master@tmp/durable-fa33915e/script.sh: docker: not found
 
-### Failed Attempt 2
+### Failed Attempt 2 - dockerfile true
 
 Code:
 ```
@@ -329,29 +344,7 @@ Caused: java.io.IOException: Cannot run program "docker": error=2, No such file 
 Finished: FAILURE
 ```
 
-
-## Kubernetes CLI
-
-#### Generating credentials
-```
-# Create a ServiceAccount named `jenkins-robot` in a given namespace.
-$ kubectl -n <namespace> create serviceaccount jenkins-robot
-
-# The next line gives `jenkins-robot` administator permissions for this namespace.
-# * You can make it an admin over all namespaces by creating a `ClusterRoleBinding` instead of a `RoleBinding`.
-# * You can also give it different permissions by binding it to a different `(Cluster)Role`.
-$ kubectl -n <namespace> create rolebinding jenkins-robot-binding --clusterrole=cluster-admin --serviceaccount=<namespace>:jenkins-robot
-
-# Get the name of the token that was automatically generated for the ServiceAccount `jenkins-robot`.
-$ kubectl -n <namespace> get serviceaccount jenkins-robot -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'
-
-
-# Retrieve the token and decode it using base64.
-$ kubectl -n <namespace> get secrets jenkins-robot-token-d6d8z -o go-template --template '{{index .data "token"}}' | base64 -d
-
-```
-
-### Attempt 3
+### Attempt 3 - Change with registry
 
 Code:
 ```
@@ -398,7 +391,7 @@ Resources:
 - Docker	 
 - CloudBees Docker Build and Publish Loading plugin extensions	 
 
-## Attempt #4
+## Attempt #4 - Added docker initialisation
 
 ```
 node {
@@ -480,8 +473,67 @@ Caused: java.io.IOException: Cannot run program "docker": error=2, No such file 
 	at java.lang.Thread.run(Thread.java:748)
 ```
 
+## Attempt #5 - with tool
+
+- Manage jenkins > Under Uncategorized > Inprocess -Script approval > Approve
+
+Code:
+```
+node {
+    def project = 'science-experiments-divya'
+    def app = 'plus2'
+    def tag = 'p2metrics-0.1' //change this to $env.BRANCH_NAME or $env.BUILD_NUMBER
+    def imageTag = '${project}/${app}:${tag}'
+    def registryip = 'https://gcr.io'
+    def DOCKER_FILES_DIR = 'deployment_model'
+    checkout scm
+
+        stage 'initial test'
+        echo 'jenkinsfile is running'
+
+        stage('Initialize'){
+        def dockerHome = tool 'myDocker'
+        env.PATH = "${dockerHome}/bin:${env.PATH}"
+        }
+        
+
+        stage 'Docker test'
+        docker.withTool("myDocker").withRegistry("${registryip}", 'gcr:science-experiments-divya') {
+
+        def customImage = docker.build("${imageTag}")
+
+        /* Push the container to the custom Registry */
+        customImage.push() }
+
+        
+        stage "list pods try one"
+        sh("kubectl get pods")
+
+}
+```
 
 
+
+## Kubernetes CLI
+
+#### Generating credentials
+```
+# Create a ServiceAccount named `jenkins-robot` in a given namespace.
+$ kubectl -n <namespace> create serviceaccount jenkins-robot
+
+# The next line gives `jenkins-robot` administator permissions for this namespace.
+# * You can make it an admin over all namespaces by creating a `ClusterRoleBinding` instead of a `RoleBinding`.
+# * You can also give it different permissions by binding it to a different `(Cluster)Role`.
+$ kubectl -n <namespace> create rolebinding jenkins-robot-binding --clusterrole=cluster-admin --serviceaccount=<namespace>:jenkins-robot
+
+# Get the name of the token that was automatically generated for the ServiceAccount `jenkins-robot`.
+$ kubectl -n <namespace> get serviceaccount jenkins-robot -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'
+
+
+# Retrieve the token and decode it using base64.
+$ kubectl -n <namespace> get secrets jenkins-robot-token-d6d8z -o go-template --template '{{index .data "token"}}' | base64 -d
+
+```
 
 
 
