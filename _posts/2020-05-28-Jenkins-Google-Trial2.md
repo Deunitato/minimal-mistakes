@@ -8,20 +8,10 @@ Scapping the pervious, I created a another installation of jenkins following ano
 - google cloud auth
 - google cloud build
 
-# Changes compared to the [Guide](https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes)
-- Use github webhook
-- Created a github credentials
-- Set number of executors as 3 (manage jenkins > System config)
-- created a secret file credentials using the key given in the example
 
 
 # Original File
 ```
-def project = 'science-experiments-divya'
-def  appName = 'seldon-p2t2'
-def  feSvcName = "${appName}-plus2"
-def  imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
-def namespace = "default"
 pipeline {
 
     environment{
@@ -79,35 +69,131 @@ spec:
                  """
           sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG_P2} ./deployment_model"
           sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG_T2} ./preprocess"
-        //    admintag = sh (script:"PYTHONUNBUFFERED=1 gcloud container images list-tags gcr.io/sentient-207310/microservice-apis-auto-admin --limit=${Limit} --sort-by=${Time} --format=${Format}",returnStdout:true)?.trim()
-        //     def adminjsonObj = readJSON text: admintag
-        //     admintagimage = "${adminjsonObj.tags[0]}"
-        //     admintagimagelatest = admintagimage.replaceAll("[^a-zA-Z0-9 ]+","")
         }
       }
     }
     stage('Deploy to k8s deployment-model') {
-      // master branch
       when { branch 'master' }
       steps {
         container('kubectl') {
-          // Change deployed image in canary to the one we just built
-          //sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/canary/*.yaml")
           sh("sed -i.bak 's#gcr.io/science-experiments-divya/plus2:p2metrics-0.1#'${IMAGE_TAG_P2}'#' ./k8s/model_deployment.yaml")
           sh("sed -i.bak 's#gcr.io/science-experiments-divya/times2:input-output#'${IMAGE_TAG_T2}'#' ./k8s/model_deployment.yaml")
 
           sh("kubectl --namespace=${namespace} apply -f k8s/")
         } 
       }
-    }
-    // stage('Deploy Dev') {
-    //   // Developer Branches
-    //   when { 
-    //     not { branch 'master' } 
-    //     not { branch 'canary' }
-    //   }     
+    }  
   }
 }
 ```
+
+# Steps
+
+
+1. Clone the repo:
+`git clone https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes.git`
+
+2. Move to the directory:
+`cd continuous-deployment-on-kubernetes`
+
+
+3. Create the service account
+> This service account is required to run the cloud build in jenkinsfile
+
+`gcloud iam service-accounts create jenkins-sa --display-name "jenkins-sa"`
+
+
+Assign the permissions:
+
+```
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/viewer"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/source.reader"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/storage.admin"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/storage.objectAdmin"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/cloudbuild.builds.editor"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/container.developer"
+```
+
+
+
+4. Generate the key
+```
+gcloud iam service-accounts keys create ~/jenkins-sa-key.json \
+    --iam-account "jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"
+```
+
+> Download the generated key
+
+
+5. Create the cluster role binding
+```
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+```
+
+
+6. Installation:
+
+- Ensure you have helm installed: `./helm version`
+
+
+
+`./helm install -n cd stable/jenkins -f jenkins/values.yaml --version 1.7.3 --wait`
+
+
+`kubectl create clusterrolebinding jenkins-deploy --clusterrole=cluster-admin --serviceaccount=default:cd-jenkins`
+
+
+7. Create a service loadbalancer deployment
+
+- This is to access the jenkins UI externally
+
+Sample service yaml:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: cd-jenkins-loadbalancer
+  labels:
+    app.kubernetes.io/name: jenkins
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: jenkins
+```
+- Creates a load balancer service named `cd-jenkins-loadbalancer`
+
+> Note that the deployment is done in the default namespace
+
+
+
+# Changes compared to the [Guide](https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes)
+- Use github webhook
+- Created a service
+- Created a github credentials
+- Set number of executors as 3 (manage jenkins > System config)
+- created a secret file credentials using the key given in the example (Credentials > Secret key using file)
+
+
 
 
