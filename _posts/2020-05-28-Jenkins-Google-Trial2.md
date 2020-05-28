@@ -195,5 +195,7 @@ spec:
 - created a secret file credentials using the key given in the example (Credentials > Secret key using file)
 
 
+<iframe src="https://drive.google.com/file/d/1iX87vYWvn7XqvHA2BVD63mBTrJFUjVSg/preview" width="640" height="680"></iframe>
+
 
 
