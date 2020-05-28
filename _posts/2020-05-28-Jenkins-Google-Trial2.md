@@ -16,6 +16,7 @@ Scapping the pervious, I created a another installation of jenkins following ano
 
 
 # Original File
+```
 def project = 'science-experiments-divya'
 def  appName = 'seldon-p2t2'
 def  feSvcName = "${appName}-plus2"
@@ -29,7 +30,7 @@ pipeline {
      APP_NAME_T2 = 'times2'
 
      APP_TAG_P2 = "p2metrics-${env.BUILD_NUMBER}" //change this to $env.BRANCH_NAME or $env.BUILD_NUMBER
-     APP_TAG_T2 = "times2:input-output" //change this to $env.BRANCH_NAME or $env.BUILD_NUMBER
+     APP_TAG_T2 = "input-output" //change this to $env.BRANCH_NAME or $env.BUILD_NUMBER
 
      DOCKER_FILES_DIR = 'deployment_model'
      CLUSTER = "cluster-1"
@@ -77,7 +78,7 @@ spec:
                  gcloud auth activate-service-account --key-file ${env.GOOGLE_APPLICATION_CREDENTIALS}
                  """
           sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG_P2} ./deployment_model"
-          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t .${IMAGE_TAG_T2} ./preprocess"
+          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG_T2} ./preprocess"
         //    admintag = sh (script:"PYTHONUNBUFFERED=1 gcloud container images list-tags gcr.io/sentient-207310/microservice-apis-auto-admin --limit=${Limit} --sort-by=${Time} --format=${Format}",returnStdout:true)?.trim()
         //     def adminjsonObj = readJSON text: admintag
         //     admintagimage = "${adminjsonObj.tags[0]}"
@@ -92,8 +93,8 @@ spec:
         container('kubectl') {
           // Change deployed image in canary to the one we just built
           //sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/canary/*.yaml")
-          sh("sed -i.bak 's#gcr.io/science-experiments-divya/plus2:p2metrics-0.1#'gcr.io/${PROJECT_TITLE}/${APP_NAME_P2}:${IMAGE_TAG_P2}'#' ./k8s/model_deployment.yaml")
-          sh("sed -i.bak 's#gcr.io/science-experiments-divya/times2:input-output#'gcr.io/${PROJECT_TITLE}/${APP_NAME_T2}:${IMAGE_TAG_T2}'#' ./k8s/model_deployment.yaml")
+          sh("sed -i.bak 's#gcr.io/science-experiments-divya/plus2:p2metrics-0.1#'${IMAGE_TAG_P2}'#' ./k8s/model_deployment.yaml")
+          sh("sed -i.bak 's#gcr.io/science-experiments-divya/times2:input-output#'${IMAGE_TAG_T2}'#' ./k8s/model_deployment.yaml")
 
           sh("kubectl --namespace=${namespace} apply -f k8s/")
         } 
@@ -107,6 +108,6 @@ spec:
     //   }     
   }
 }
-
+```
 
 
