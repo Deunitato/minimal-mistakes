@@ -13,6 +13,11 @@ This is my attempt at creating a jenkins pipeline with the use of gcr google clo
 - Google Cloud Build	 
 - Google Metadata	 
 - Google OAuth Credentials	 
+- Kubernetes Continuous Deploy	 
+- Kubernetes Credentials Provider	 
+- Kubernetes CLI
+- Google Kubernetes Engine	 
+- Kubernetes :: Pipeline :: DevOps Steps
 
 # Credentials
 - Github
@@ -140,15 +145,9 @@ spec:
     stage('Build and push image with Container Builder') {
       steps {
         container('gcloud') {
-            // sh """
-            //     gcloud auth activate-service-account --key-file ${env.GOOGLE_APPLICATION_CREDENTIALS}
-            //     """
           sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG_P2} ./deployment_model"
           sh "PYTHONUNBUFFERED=1 gcloud builds submit -t .${IMAGE_TAG_T2} ./preprocess"
-        //    admintag = sh (script:"PYTHONUNBUFFERED=1 gcloud container images list-tags gcr.io/sentient-207310/microservice-apis-auto-admin --limit=${Limit} --sort-by=${Time} --format=${Format}",returnStdout:true)?.trim()
-        //     def adminjsonObj = readJSON text: admintag
-        //     admintagimage = "${adminjsonObj.tags[0]}"
-        //     admintagimagelatest = admintagimage.replaceAll("[^a-zA-Z0-9 ]+","")
+
         }
       }
     }
@@ -157,25 +156,51 @@ spec:
       when { branch 'master' }
       steps {
         container('kubectl') {
-          // Change deployed image in canary to the one we just built
-          //sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/canary/*.yaml")
           sh("sed -i.bak 's#gcr.io/science-experiments-divya/plus2:p2metrics-0.1#'gcr.io/${PROJECT_TITLE}/${APP_NAME_P2}:${IMAGE_TAG_P2}'#' ./k8s/model_deployment.yaml")
           sh("sed -i.bak 's#gcr.io/science-experiments-divya/times2:input-output#'gcr.io/${PROJECT_TITLE}/${APP_NAME_T2}:${IMAGE_TAG_T2}'#' ./k8s/model_deployment.yaml")
 
           sh("kubectl --namespace=${namespace} apply -f k8s/")
         } 
       }
+    } 
     }
-    // stage('Deploy Dev') {
-    //   // Developer Branches
-    //   when { 
-    //     not { branch 'master' } 
-    //     not { branch 'canary' }
-    //   }     
-    }
-  }
 }
 ```
+### Error:
+
+#### #1
+```
+ERROR: Cloud does not exist: kubernetes
+Finished: FAILURE
+```
+Changes:
+- Change label in yaml file to pod name
+
+` seldon-p2t2 -> seldon-metrics-t1-t2-0-model-transformer-7b5bc7b974-pzn5d` [Parameters](https://github.com/jenkinsci/kubernetes-plugin#pod-and-container-template-configuration)
+
+- Change service account to my service account provision for jenkins
+
+`cd-jenkins -> jenkins-serviceaccount`
+
+> Still fail
+
+- Add a cloud (Kubernetes) under manage [Forum](http://jenkins-ci.361315.n4.nabble.com/Kubernetes-plugin-cloud-not-found-error-td4912675.html)
+
+> Show different error
+
+#### #2
+- Build take forever
+- Ran command `kubectl logs jenkins-google-648679699d-dcf69 -n jenkins-google` to show log messages:
+```
+Failure executing: GET at: https://10.113.0.1/api/v1/namespaces/jenkins-google/pods?labelSelector=jenkins%3Dslave. Message: Forbidden!Configured service account doesn't have access. Service 
+account may have been revoked. pods is forbidden: User "system:serviceaccount:jenkins-google:default" cannot list resource 
+"pods" in API group "" in the namespace "jenkins-google".
+```
+
+
+
+
+
 
 
 References:
