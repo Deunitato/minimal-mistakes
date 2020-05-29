@@ -474,12 +474,12 @@ Code snippet:
         if self.ret_meta:
             return {
             "Something TRUE":"new",
-            "somedictionary": [{"name1": "input1", "datatype1": "BYTES1", "shape1": [1]}],
+            "somedictionary": [{"name1": "input1", "datatype1": "BYTES1", "shape1": [1]}]
         }
         else:
             return {
             "NOT TRUE":"new",
-            "somedictionary": [{"name1": "input1", "datatype1": "BYTES1", "shape1": [1]}],
+            "somedictionary": [{"name1": "input1", "datatype1": "BYTES1", "shape1": [1]}]
         }
 ```
 
