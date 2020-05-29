@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 Today I did some testing for seldon-core
 
