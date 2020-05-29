@@ -489,6 +489,63 @@ Changed code snippet:
 
 
 
+#### Change code - More metrics
+
+- Added more metrics
+
+(Image = input-output-v5.1)
+
+Code snippet
+
+```
+   def metrics(self):
+        if self.metrics_ok:
+            return [
+            {"type": "COUNTER", "key": "mycounter", "value": 1}, # a counter which will increase by the given value
+            {"type": "GAUGE", "key": "mygauge", "value": 100},   # a gauge which will be set to given value
+            {"type": "TIMER", "key": "mytimer", "value": 20.2},  # a timer which will add sum and count metrics - assumed millisecs
+        ]
+        else:
+            return [{"type": "BAD", "key": "mycounter", "value": 1}]
+        
+```
+
+
+
+Response:
+```json
+{
+    "jsonData": {
+        "X": 22222,
+        "XXX": "s",
+        "Y": 3
+    },
+    "meta": {
+        "metrics": [
+            {
+                "key": "mycounter",
+                "type": "COUNTER",
+                "value": 1
+            },
+            {
+                "key": "mygauge",
+                "type": "GAUGE",
+                "value": 100
+            },
+            {
+                "key": "mytimer",
+                "type": "TIMER",
+                "value": 20.2
+            }
+        ],
+        "tags": {
+            "mytag": 1
+        }
+    }
+}
+```
+
+
 
 # Tag testing
 
@@ -546,6 +603,9 @@ Get methods:
 ```
 
 > No sign of tags
+
+
+
 
 # Seldon-core Load testing
 
