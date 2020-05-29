@@ -1,11 +1,14 @@
 ---
 published: true
 ---
-Today I did some testing for seldon-core
+Today I did some testing for seldon-core (1.1.0)
 
 ### Things covered
 - Metrics endpoint 
 - Metadata (Change of structure)
+- Combined testing phase
+- Tag testing
+- CI/CD Jenkins with seldon-core
 - Seldon-core testing / seldon-core testing framework
 
 
@@ -206,6 +209,8 @@ References:
 [Seldon-core Metrics code](https://docs.seldon.io/projects/seldon-core/en/latest/_modules/seldon_core/metrics.html), [Seldon-core wrapper source code](https://docs.seldon.io/projects/seldon-core/en/latest/_modules/seldon_core/wrapper.html?highlight=%2Fhealth),[Exposing prometheus /metric wrapper issue](https://github.com/SeldonIO/seldon-core/issues/1476),[Seldon-core metrics documentation](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/analytics/analytics.html?highlight=metrics%20endpoint#metrics)
 
 
+
+
 # Custom meta-data
 
 - Attempts to create custom metadata
@@ -221,7 +226,8 @@ References:
 > Possibly the /model/metadata does not work due to having only one model
 
 200:
-- `curl -X GET http://localhost:5000/metadata`
+- `curl -X GET http://localhost:5000/metadata` (Localy)
+- ` curl -X GET http://35.240.217.69:80/seldon/default/seldon-simple/api/v1.0/metadata/model` (Ambassador)
 
 Returns: 
 ```
@@ -291,12 +297,202 @@ Returns:
 
 ### Trial 3 - remove init-metadata
 
+- remove the function init-metadata
 
+Returns:
+```json
+{"Something":"new","inputs":[{"datatype":"BYTES","name":"input","shape":[1]}],"mymodel":"model-name","outputs":[{"datatype":"BYTES","name":"output","shape":[1]}],"platform":"platform-name","versions":["model-version"]}
+```
+
+
+> Ability to self define our own metadata might be due to the version of seldon-core. 
+Latest might not have custom meta data
 
 ## Workability
 
 ![seldon_meta_1.PNG]({{site.baseurl}}/img/seldon_meta_1.PNG)
 [Link](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/python_wrapping_docker.html?highlight=metrics%20endpoint#advanced-usage)
 
+References:
+[Metadata documentation](https://docs.seldon.io/projects/seldon-core/en/latest/examples/metadata.html)
 
+
+# Combined testing phase - Metadata and metrics
+## Changed code
+- Added metrics in init function
+
+Sample code:
+(Image = input-output-v2)
+```python
+import logging
+import base64
+class simple(object):
+    """
+    Model template. You can load your model parameters in __init__ from a location accessible at runtime
+    """
+
+    def __init__(self, metrics_ok=True, ret_nparray=False, ret_meta=False):
+        """
+        Add any initialization parameters. These will be passed at runtime from the graph definition parameters defined in your seldondeployment kubernetes resource manifest.
+        """
+        print("Initializing")
+        self.metrics_ok = metrics_ok
+        self.ret_nparray = ret_nparray
+        self.ret_meta = ret_meta
+
+        return
+
+    def health_status(self):
+    #response = self.predict([1, 2], ["f1", "f2"])
+    #assert len(response) == 2, "health check returning bad predictions" # or some other simple validation
+        return "I am super healthy :)"
+
+    def metadata(self):
+
+        meta = {
+            "Something":"new",
+            "somedictionary": [{"name1": "input1", "datatype1": "BYTES1", "shape1": [1]}],
+        }
+
+        return meta
+
+
+    def metrics(self):
+        if self.metrics_ok:
+            return [{"type": "COUNTER", "key": "mycounter", "value": 1}]
+        else:
+            return [{"type": "BAD", "key": "mycounter", "value": 1}]
+        
+    def predict(self, X, feature_names):
+        """
+        Return a prediction.
+
+        Parameters
+        ----------
+        X : array-like
+        """
+        print("Predict called - will run plus2 function")
+        logging.info(X)
+        
+        return X
+
+```
+
+Testing phase:
+1) GET methods
+
+404 not found:
+- `http://35.240.217.69:80/seldon/default/seldon-simple/api/v0.1/metric/model`
+- `http://35.240.217.69:80/seldon/default/seldon-simple/api/v0.1/metrics/model`
+- `http://35.240.217.69:80/seldon/default/seldon-simple/metric/model`
+- `http://35.240.217.69:80/seldon/default/seldon-simple/metric/model`
+- `http://35.240.217.69:80/seldon/default/seldon-simple/model/metrics`
+- `http://35.240.217.69:80/seldon/default/seldon-simple/model/metric`
+- `http://35.240.217.69:80/seldon/default/seldon-simple/api/v0.1/model/metric`
+- `http://35.240.217.69:80/seldon/default/seldon-simple/api/v0.1/model/metrics`
+
+
+200 OK:
+`http://35.240.217.69:80/seldon/default/seldon-simple/api/v0.1/metadata/model`
+
+Returns:
+```json
+{
+    "Something": "new",
+    "somedictionary": [
+        {
+            "datatype1": "BYTES1",
+            "name1": "input1",
+            "shape1": [
+                1
+            ]
+        }
+    ]
+}
+```
+
+2) Post methods
+
+`http://35.240.217.69:80/seldon/default/seldon-simple/api/v0.1/predictions` (POST)
+
+Input: `{"jsonData": {"X" : 4 }}`
+Output:
+```
+{
+    "jsonData": {
+        "X": 4
+    },
+    "meta": {
+        "metrics": [
+            {
+                "key": "mycounter",
+                "type": "COUNTER",
+                "value": 1
+            }
+        ]
+    }
+}
+```
+
+> Returned metrics together with data
+
+
+
+
+
+#### Change of code 1 - ret_meta
+
+(Image = input-output-v3)
+
+Change code snippet:
+
+```
+   def __init__(self, metrics_ok=True, ret_nparray=False, ret_meta=True):
+        """
+        Add any initialization parameters. These will be passed at runtime from the graph definition parameters defined in your seldondeployment kubernetes resource manifest.
+        """
+        print("Initializing")
+        self.metrics_ok = metrics_ok
+        self.ret_nparray = ret_nparray
+        self.ret_meta = ret_meta
+
+        return
+        
+```
+
+> No difference from output of image = input-output-v2 using the same test cases
+
+
+#### Change code - metadata
+
+(Image = input-output-v3.1)
+
+Code snippet:
+```
+    def metadata(self):
+
+        if self.ret_meta:
+            return {
+            "Something TRUE":"new",
+            "somedictionary": [{"name1": "input1", "datatype1": "BYTES1", "shape1": [1]}],
+        }
+        else:
+            return {
+            "NOT TRUE":"new",
+            "somedictionary": [{"name1": "input1", "datatype1": "BYTES1", "shape1": [1]}],
+        }
+```
+
+
+
+# Tag testing
+
+
+
+
+# Seldon-core Load testing
+
+
+References:
+[Helm installation](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/examples/autoscaling_example.html?highlight=load%20testing#Create-Load),
 
