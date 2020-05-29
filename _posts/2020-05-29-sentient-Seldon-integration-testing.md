@@ -229,6 +229,69 @@ Returns:
 ```
 
 
+### Trial 1
+
+Changing init_metadata:
+```
+    def init_metadata(self):
+
+        meta = {
+            "mymodel": "model-name",
+            "versions": ["model-version"],
+            "platform": "platform-name",
+            "Something":"new",
+            "inputs": [{"name": "input", "datatype": "BYTES", "shape": [1]}],
+            "outputs": [{"name": "output", "datatype": "BYTES", "shape": [1]}],
+        }
+
+        return meta
+```
+> I remove metadata()
+
+Return: `{}`
+
+### Trial 2 - Putting back metadata
+
+- Return metadata function 
+- metadata return the same dictionary as init
+
+Code:
+
+```python3
+def metadata(self):
+
+        meta = {
+            "mymodel": "model-name",
+            "versions": ["model-version"],
+            "platform": "platform-name",
+            "Something":"new",
+            "inputs": [{"name": "input", "datatype": "BYTES", "shape": [1]}],
+            "outputs": [{"name": "output", "datatype": "BYTES", "shape": [1]}],
+        }
+
+        return meta
+
+    def init_metadata(self):
+
+        meta = {
+            "mymodel": "model-name",
+            "versions": ["model-version"],
+            "platform": "platform-name",
+            "Something":"new",
+            "inputs": [{"name": "input", "datatype": "BYTES", "shape": [1]}],
+            "outputs": [{"name": "output", "datatype": "BYTES", "shape": [1]}],
+        }
+
+        return meta
+```
+Returns: 
+```json
+{"Something":"new","inputs":[{"datatype":"BYTES","name":"input","shape":[1]}],"mymodel":"model-name","outputs":[{"datatype":"BYTES","name":"output","shape":[1]}],"platform":"platform-name","versions":["model-version"]}
+```
+
+### Trial 3 - remove init-metadata
+
+
 
 ## Workability
 
