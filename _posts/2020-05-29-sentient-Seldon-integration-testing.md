@@ -465,9 +465,11 @@ Change code snippet:
 
 #### Change code - metadata
 
+- Attempts to make the predict call return the metadata instead of just the metrics
+
 (Image = input-output-v3.1)
 
-Code snippet:
+Changed code snippet:
 ```
     def metadata(self):
 
@@ -483,12 +485,67 @@ Code snippet:
         }
 ```
 
+> Still returns only the metrics
+
+
 
 
 # Tag testing
 
+(Image = input-output-v4)
+
+Added snippet:
+```
+    def tags(self):
+        return {"mytag": 1}
+```
 
 
+Post methods:
+- `http://35.240.217.69:80/seldon/default/seldon-simple/api/v1.0/predictions`
+
+Input:`{"jsonData": {"X" : 4 }}`
+
+Output:
+```json
+{
+    "jsonData": {
+        "X": 4
+    },
+    "meta": {
+        "metrics": [
+            {
+                "key": "mycounter",
+                "type": "COUNTER",
+                "value": 1
+            }
+        ],
+        "tags": {
+            "mytag": 1
+        }
+    }
+}
+```
+
+Get methods:
+`http://35.240.217.69:80/seldon/default/seldon-simple/api/v1.0/metadata/model`
+
+```json
+{
+    "Something TRUE": "new",
+    "somedictionary": [
+        {
+            "datatype1": "BYTES1",
+            "name1": "input1",
+            "shape1": [
+                1
+            ]
+        }
+    ]
+}
+```
+
+> No sign of tags
 
 # Seldon-core Load testing
 
