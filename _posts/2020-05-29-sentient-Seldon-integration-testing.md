@@ -152,16 +152,88 @@ Response:
 }
 ```
 
-## Metrics endpoint
+# Metrics endpoint
 
 Sending with `{"jsonData": {"X" : 4 }}`
 
 404 page not found:
 - `/api/v0.1/prometheus/metrics`
 - `/api/v0.1/metrics`
-- 	
+
+
+> Possible that metrics is only visible via prometheus
+
+
+Auto generated:
+![seldon_metrics_1.PNG]({{site.baseurl}}/img/seldon_metrics_1.PNG)
+![seldon_metrics_2.PNG]({{site.baseurl}}/img/seldon_metrics_2.PNG)
+
+Issue:
+![seldon_metrics_3.PNG]({{site.baseurl}}/img/seldon_metrics_3.PNG)
+[Link](https://github.com/SeldonIO/seldon-core/issues/1729#issuecomment-618362123)
+
+
+## Using local docker
+
+Setup:
+`docker run --rm --name mymodel -p 5000:5000 mymodel:0.1`
+
+
+
+[Reference link](https://docs.seldon.io/projects/seldon-core/en/latest/workflow/serving.html)
+
+1) Testing:
+`curl -X POST -H 'Content-Type: application/json' -d '{"jsonData": {"X" : 4 }}' http://localhost:5000/api/v1.0/predictions`
+
+Response: 
+`{"jsonData":{"X":4},"meta":{"metrics":[{"key":"mycounter","type":"COUNTER","value":1},{"key":"mygauge","type":"GAUGE","value":100},{"key":"mytimer","type":"TIMER","value":20.2}]}}`
+
+
+2) Metric
+
+404 Error:
+- `curl -X GET http://localhost:5000/metric`
+- `curl -X GET http://localhost:5000/metrics`
+- `curl -X GET http://localhost:5000/api/v1.0/prometheus`
+- `curl -X GET http://localhost:5000/api/v1.0/metrics`
+- `curl -X GET http://localhost:5000/api/v1.0/metric`
+- `curl -X GET http://localhost:5000/api/v1.0/model/metrics`
+- `curl -X GET http://localhost:5000/api/v1.0/model/metric`
 
 
 
 References:
 [Seldon-core Metrics code](https://docs.seldon.io/projects/seldon-core/en/latest/_modules/seldon_core/metrics.html), [Seldon-core wrapper source code](https://docs.seldon.io/projects/seldon-core/en/latest/_modules/seldon_core/wrapper.html?highlight=%2Fhealth),[Exposing prometheus /metric wrapper issue](https://github.com/SeldonIO/seldon-core/issues/1476),[Seldon-core metrics documentation](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/analytics/analytics.html?highlight=metrics%20endpoint#metrics)
+
+
+# Custom meta-data
+
+- Attempts to create custom metadata
+
+
+
+## Local docker
+
+404 error:
+- ` curl -X GET http://localhost:5000/api/v1.0/model/metadata`
+- `curl -X GET http://localhost:5000/model/metadata`
+
+> Possibly the /model/metadata does not work due to having only one model
+
+200:
+- `curl -X GET http://localhost:5000/metadata`
+
+Returns: 
+```
+{"inputs":[{"datatype":"BYTES","name":"input","shape":[1]}],"name":"model-name","outputs":[{"datatype":"BYTES","name":"output","shape":[1]}],"platform":"platform-name","versions":["model-version"]}
+```
+
+
+
+## Workability
+
+![seldon_meta_1.PNG]({{site.baseurl}}/img/seldon_meta_1.PNG)
+[Link](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/python_wrapping_docker.html?highlight=metrics%20endpoint#advanced-usage)
+
+
+
