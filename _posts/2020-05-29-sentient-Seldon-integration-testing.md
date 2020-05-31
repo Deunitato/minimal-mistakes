@@ -546,6 +546,50 @@ Response:
 ```
 
 
+> Conclusion: 
+> - Metrics will return in the POST method no matter if metrics_ok is set to true or false. 
+>
+> - There seems to not exist an /metrics endpoint
+> 
+> - Metadata will not be returned using the POST method if metrics is defined
+>
+> - Metadata can be access by `/metadata/<MODELNAME>` endpoint
+>
+> - Declaring ret_meta = true in init function does not do anything
+>
+> - We can declare our own metadata in this version but suspected that future version will not allow our own custom metadata (we can make use of tags)
+>
+> - Init_metadata seems to be useless for now
+>
+>
+
+
+## Changing of port 6000
+
+
+Input tested:
+1. `curl -X POST -H 'Content-Type: application/json' -d '{"jsonData": {"X" : 4 }}' http://localhost:5000/api/v1.0/metrics`
+
+2. `curl -X GET http://localhost:6000/metrics`
+
+3. `curl -X GET http://localhost:6000/metrics/model`
+
+
+Command run at own shell:
+
+
+- `docker run --rm --name mymodel -p 6000:6000 gcr.io/science-experiments-divya/simple:input-output-v4`
+
+### Results:
+
+1) Error 404
+
+2) Nothing returned (Command line empty)
+
+3) Error 404
+
+
+> Conclusion: Ignored 
 
 # Tag testing
 
@@ -605,6 +649,9 @@ Get methods:
 > No sign of tags
 
 
+> Conclusion: Tags will appear with the return value when using POST method, it will not return anything if using a get method with the endpoint "metadata/model" (This case model is the only deployment used)
+
+# Jenkins CI/CD 
 
 
 # Seldon-core Load testing
@@ -612,4 +659,3 @@ Get methods:
 
 References:
 [Helm installation](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/examples/autoscaling_example.html?highlight=load%20testing#Create-Load),
-
