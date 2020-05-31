@@ -560,8 +560,12 @@ Response:
 > - We can declare our own metadata in this version but suspected that future version will not allow our own custom metadata (we can make use of tags)
 >
 > - Init_metadata seems to be useless for now
->
->
+
+
+References:
+[Use of python init - superclass](https://stackoverflow.com/questions/3694371/how-do-i-initialize-the-base-super-class), [Init](https://micropyramid.com/blog/understand-self-and-__init__-method-in-python-class/)
+
+
 
 
 ## Changing of port 6000
