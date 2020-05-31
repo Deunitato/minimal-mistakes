@@ -497,7 +497,7 @@ Changed code snippet:
 
 Code snippet
 
-```
+```python
    def metrics(self):
         if self.metrics_ok:
             return [
@@ -657,5 +657,15 @@ Get methods:
 # Seldon-core Load testing
 
 
+
+
+
 References:
-[Helm installation](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/examples/autoscaling_example.html?highlight=load%20testing#Create-Load),
+[Helm installation](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/examples/autoscaling_example.html?highlight=load%20testing#Create-Load)
+
+
+
+
+# Other references
+
+[Issue regarding metadata and raw](https://github.com/SeldonIO/seldon-core/issues/1899), [How does custom metrics works issue](https://github.com/SeldonIO/seldon-core/issues/1898)
