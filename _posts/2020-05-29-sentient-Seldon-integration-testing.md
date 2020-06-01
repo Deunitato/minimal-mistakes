@@ -655,10 +655,49 @@ Get methods:
 
 > Conclusion: Tags will appear with the return value when using POST method, it will not return anything if using a get method with the endpoint "metadata/model" (This case model is the only deployment used)
 
-# Jenkins CI/CD 
+# Jenkins CI/CD with seldon
 
+How the work flow is suppose to be like:
+
+1. A Data Scientist or ML Engineer trains a new model.
+2. The Data Scientist or ML Engineer pushes the updated configuration to the model implementation repository.
+3. The CI tool automatically builds and tests the model implementation.
+4. The CI tool automatically pushes the change into the GitOps staging repository.
+5. The CI tool automatically opens a PR into the GitOps production repository.
+
+
+## Private repo (WebHook)
+
+- Use ssh keys to enable the webhook
+
+```
+%%bash
+export GITHUB_USER=john.doe
+export GITHUB_TOKEN=12341234
+
+argocd repo add https://github.com/$GITHUB_ORG/$REPONAME --username $GITHUB_USER --password $GITHUB_TOKEN
+```
+
+
+
+
+Resource:
+
+[Official document - jenkins seldon](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/examples/jenkins_classic.html),
+
+
+
+> Conclusion: 
+>
+> We can just make use of the Jenkins sample we did and it is dependent on the application we are making. I have already tested an automated deployment of Jenkins
 
 # Seldon-core Load testing
+
+The definition of load testing/testing framework is very broad.
+
+## Load testing
+
+- Found [iago](https://github.com/twitter-archive/iago) load testing.
 
 
 
@@ -672,4 +711,4 @@ References:
 
 # Other references
 
-[Issue regarding metadata and raw](https://github.com/SeldonIO/seldon-core/issues/1899), [How does custom metrics works issue](https://github.com/SeldonIO/seldon-core/issues/1898)
+[Issue regarding metadata and raw](https://github.com/SeldonIO/seldon-core/issues/1899), [How does custom metrics works issue](https://github.com/SeldonIO/seldon-core/issues/1898), [Accessing custom metrics issue](https://github.com/SeldonIO/seldon-core/issues/245),[Test combiner seldon code](https://github.com/SeldonIO/seldon-core/blob/master/python/tests/test_combiner_microservice.py),[Add model metadata support issue](https://github.com/SeldonIO/seldon-core/issues/1638)
