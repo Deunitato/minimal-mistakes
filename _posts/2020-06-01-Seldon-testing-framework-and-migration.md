@@ -118,7 +118,9 @@ class TaxonomyApp(object):
         with open("metadata.json", "r") as f:
             metadata = json.load(f)
 
-        return jsonify(metadata)
+         return {
+            "metadata": jsonify(metadata)
+        }
 
 
     def predict_raw(self, request):
@@ -138,7 +140,9 @@ class TaxonomyApp(object):
 
         else:
             
-            return jsonify(tx.predict(text, threshold))
+             return {
+                "data": jsonify(tx.predict(text, threshold))
+             }
 
 """
 User Defined Exception
