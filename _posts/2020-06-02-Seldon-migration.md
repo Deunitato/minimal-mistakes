@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 # Things done today
 - Seldon migration : Taxonomy
