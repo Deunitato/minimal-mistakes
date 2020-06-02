@@ -9,6 +9,16 @@ published: true
 # Seldon migration
 - Current idea is to rid the need for the flask and to use seldon framework instead
 
+
+Changes:
+- Change deploy_requirements.txt name to `requirement.txt`
+- Add in seldon base methods
+- Add in customUserexception class
+- Copy all helper functions
+- Replace seldon's init with the init found in the main file
+- Set up environement if any (Refer to dockerfile)
+- Ensure the predict_raw and metadata return the correct output format (dict)
+
 ## Base code
 
 Base code:
@@ -320,6 +330,8 @@ Full sample:
 #### Extras:
 
 Setting up environment
+- We can use this code prepare an environemnt
+
 ```json
 "env": [
     {
