@@ -163,7 +163,7 @@ class UserCustomException(Exception):
 
 
 Resources:
-[User defined execption for seldon](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/python_component.html#user-defined-exceptions), [Tags seldon](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/python_component.html#returning-tags), [jsonify vs json](https://stackoverflow.com/questions/7907596/json-dumps-vs-flask-jsonify)
+[User defined execption for seldon](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/python_component.html#user-defined-exceptions), [Tags seldon](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/python_component.html#returning-tags), [jsonify vs json](https://stackoverflow.com/questions/7907596/json-dumps-vs-flask-jsonify), [seldon methods return value](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/api/seldon_core.html?highlight=predict_raw#seldon_core.user_model.SeldonComponent.predict_raw), 
 
 # Others
 [Jenkins pipelien repo](https://github.com/Deunitato-sentient/seldon-jenkins-experiement)
