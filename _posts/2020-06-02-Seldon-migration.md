@@ -232,3 +232,163 @@ class UserCustomException(Exception):
 
 - Since in the [documentation](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/python/api/seldon_core.html?highlight=predict_raw#seldon_core.user_model.SeldonComponent.predict_raw), it is said that predict_raw required user to return a dict instead if json, thus in taxonomy 
 - Used raise for exceptions
+
+
+### Code base: Edit 1
+> Included the class taxonomy functions and its helper function
+
+Repo: <[Repo link](https://github.com/Deunitato-sentient/microservice-ai-taxonomy_generic/blob/initial_branch/deploy/TaxonomyGeneric.py)>
+
+
+
+# Alfred
+
+
+## Installation (Without Jupyter)
+- Navigate to Alfred directory
+- Run command `pip3 install -e ./Alfred`
+
+Copy files
+
+Home dir:
+- config-engg.json
+- config.yaml
+
+Deploy file:
+- Alfred_script.py
+
+
+## Files
+
+### Config-eng
+
+- ambassador_mappingname: Follow the format `<model_name>_mappings`
+- ambassador_customurl: Format is `/microservices/nlp/<modelTitle>/v0.1/getpredictions`
+- ambassador_service: `<meta_data_name>/<graph_name>.default:8000`
+- model_storage: The name of your container registry
+
+e.g
+```
+    "ambassador_mappingname": "inverse_norm_mapping",
+    "ambassador_customurl": "/microservices/nlp/inverseNorm/v0.1/getpredictions",
+    "ambassador_service":"inverse-norm-pod.default:8000",
+    "ambassador_timeout":60000
+```
+
+
+```
+"model_storage": {"uri":"gs://science-experiments-divya"}}
+```
+
+Full sample:
+
+```json
+{
+    "annotations":
+    {
+     "project_name":"inverseNorm",
+     "deployment_version": "v1",
+     "seldon_rest_timeout": "'60000'",
+    "seldon_rest_connection_timeout": "'60000'",
+    "seldon_grpc_read_timeout": "'60000'",
+    "ambassador_mappingname": "inverse_norm_mapping",
+    "ambassador_customurl": "/microservices/nlp/inverseNorm/v0.1/getpredictions",
+    "ambassador_service":"inverse-norm-pod.default:8000",
+    "ambassador_timeout":60000
+	
+    },
+    
+"livenessProbe": {
+    "failureThreshold": 3,
+    "initialDelaySeconds": 100,
+    "periodSeconds": 5,
+    "successThreshold": 1,
+    "timeoutSeconds": 1
+  },
+  "readinessProbe": {
+    "failureThreshold": 3,
+    "initialDelaySeconds": 100,
+    "periodSeconds": 5,
+    "successThreshold": 1,
+    "timeoutSeconds": 1
+  },
+"model_storage": {"uri":"gs://science-experiments-divya"}}
+```
+
+> Note that of all the values, the `ambassador_service` must follow the format of the yaml file, for the other config is custom
+
+#### Extras:
+
+Setting up environment
+```json
+"env": [
+    {
+      "name": "GUNICORN",
+      "value": "4"
+    },
+    {
+      "name": "PORT",
+      "value": "5000"
+    }
+  ],
+```
+
+### Config.yaml
+
+Main important changes:
+- metadataname
+- graphname
+
+> this is important as it affect the other file (json)
+
+Sample:
+```yaml
+metadata_name : inverse
+model_name : inverse_norm
+models_used : "yes"
+containers :
+    - container_name : inverse
+      tag_num : 0.1.0
+      artefacts : "yes"
+      docker_details:
+        version : 0.1.0
+        ENV:
+          - MODEL_NAME : inverse_norm
+            SERVICE_TYPE : MODEL
+   
+graph:
+  name: inverse-norm
+  type: MODEL
+  endpoint:
+    type: REST
+  children: []
+predictor_name: norm-pod
+```
+
+### Alfred_script.py
+
+Changes:
+- config yaml path
+
+```python
+# Saving the path of input config file filled by scientists
+config_yaml="/mnt/c/Users/Charlotte/Desktop/NUS DOC/Code/sentient/microservice-ai-inverse_norm/config.yaml"
+
+# Reading the input config file filled by engineering team
+# Need to be commented if config-engg.json is not required
+with open("/mnt/c/Users/Charlotte/Desktop/NUS DOC/Code/sentient/microservice-ai-inverse_norm/config-engg.json") as f:
+  default_dict = json.load(f)
+```
+
+- Change the path to match the location
+
+## Running it
+
+Run the command python3 Alfred_scipt.py
+
+Expected output:
+- Dockerfile is generated
+- Deployment yaml is generated
+
+> Check through ensure its correct
+
