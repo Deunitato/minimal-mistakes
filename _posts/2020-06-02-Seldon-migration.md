@@ -26,11 +26,100 @@ Base code:
 import os
 import json
 import logging
+import re
+import numpy as np
+import pandas as pd
+from collections import Counter
+import networkx as nx
+from networkx.algorithms import all_shortest_paths
+import spacy
 from flask import Flask, jsonify
 
-from TaxonomyGeneric import Taxonomy
+# ======================================================================================================================
+# Helper Functions
+# ======================================================================================================================
+def generate_nodes_from_category(category):
+    
+    all_nodes = []
+        
+    nodes = category.split("/")
+    
+    n_nodes = len(nodes)
 
-class TaxonomyApp(object):
+    for i, j in enumerate(nodes):
+
+        n_ = ("_".join([j.lower(), str(i)]), {"name": j, "level": i})
+        
+        if i == 0:
+            
+            n_[1].update({"type": "root"})
+            
+        elif i == (n_nodes - 1):
+            
+            n_[1].update({"type": "leaf"})
+        
+        else:
+            
+            n_[1].update({"type": "body"})
+
+        all_nodes.append(n_)
+    
+    return all_nodes
+
+def generate_category_nodes_edges(category):
+    
+    category = category.strip()
+    
+    try:
+        
+        assert (category is not None) or (len(category) > 0)
+        
+    except AssertionError:
+        
+        raise ValueError("Must input valid category.")
+    
+    else:
+                
+        cat_nodes = generate_nodes_from_category(category)
+
+        cat_node_names = [i for i, j in cat_nodes]
+        
+        starting_nodes = cat_node_names[:-1]
+        ending_nodes = cat_node_names[1:]
+        
+        return cat_nodes, list(zip(starting_nodes, ending_nodes))
+
+def generate_graph(categories):
+    
+    all_nodes = []
+    all_edges = []
+    
+    for cat in categories:
+        
+        n_, e_ = generate_category_nodes_edges(cat)
+        
+        all_nodes += n_
+        all_edges += e_
+        
+    G = nx.DiGraph()
+    
+    G.add_nodes_from(all_nodes)
+    G.add_edges_from(all_edges)
+                
+    return G
+
+def get_graph_data(G, data_name, sort=True):
+    
+    data = pd.Series(dict(G.nodes.data(data_name)), name=data_name)
+    
+    return data.sort_values() if sort else data
+
+def convert_node_ids_to_names(node_ids, node_name_map):
+
+    return [node_name_map.loc[_] for _ in node_ids]
+
+
+class Taxonomy(object):
     """
     Model template. You can load your model parameters in __init__ from a location accessible at runtime
     """
@@ -56,10 +145,11 @@ class TaxonomyApp(object):
     # ==============================================================================
     # Instantiate NER object
     # ==============================================================================
-    tx = Taxonomy(taxonomy_json_path, embedding_path=glove_dir)
+    #tx = Taxonomy(taxonomy_json_path, embedding_path=glove_dir)
 
-    tx.initialise()
-
+    # ==============================================================================
+    # Seldon-core python wrapper methods
+    # ==============================================================================
     """
     The field is used to register custom exceptions
     """
@@ -74,12 +164,74 @@ class TaxonomyApp(object):
         response.status_code = error.status_code
         return response
     
-    def __init__(self, metrics_ok=True, ret_nparray=False, ret_meta=True):
+    def __init__(self, data_path = taxonomy_json_path, embedding_path = glove_dir, insist_dag=True, default_threshold=0.95):
+        """Taxonomy (Generic)
+        Finds the category a particular word belongs to given a pre-built taxonomy tree.
+        
+        The full taxonomy consists of a few major categories (for e.g. retail, cars, etc.). Each category is stored as a separate taxonomy tree within the `Taxonomy` instance.
+        
+        Each node in a taxonomy tree is identified using a node_id. It has attributes: name (a human readable string), level (how far it is from the root node) and type (whether it is a root node, leaf node or body node).
+        
+        Given a word, the `Taxonomy` object wil then try to match the word with the name of the leaf nodes. The entire branch from the matched leaf node to the root of the corresponding taxonomy tree will then be returned.
+        
+        Parameters
+        ----------
+        data_path : str or path-like object
+            Path to taxonomy tree data (should be a JSON file)
+        
+        embedding_path : str or path-like object
+            Path to directory containing word embedding vectors.
+            
+            Default: "./data/glove_vec"
+            
+        insist_dag : boolean
+            Insist that taxonomy tree is a directed acyclical graph
+        
+        default_threshold : float
+            Between 0 and 1. Minimum word similarity required when comparing match term with leaf nodes of taxonomy tree.
+            
+        Attributes
+        ----------
+        nlp : spacy language model
+            Stores word embeddings
+        
+        graphs : dict of networkx graphs
+            Stores taxonomy trees. Consists of various categories.
+            
+            Default: empty dict
+        
+        node_names : dict of pandas Series
+            Mapping of taxonomy tree name (keys) to a pandas Series that maps the node ID to human-readable node names within that taxonomy tree
+        
+        node_levels : dict of pandas Series
+            Mapping of taxonomy tree name (keys) to a pandas Series that maps the node ID to the node level within that taxonomy tree
+        
+        node_name_tokens : dict of pandas Series
+            Mapping of taxonomy tree name (keys) to a pandas Series that maps the node ID to tokenised human-readable node names within that taxonomy tree. This is to facilitate comparison with match term using the spacy word embeddings later.
+        
+        node_data_names : list of str 
+            List of node attributes.
+            
+            Default : ["level", "type", "name"]
+            
+        logger : logger instance
+            Logger used to log processes.
         """
-        Add any initialization parameters. These will be passed at runtime from the graph definition parameters defined in your seldondeployment kubernetes resource manifest.
-        """
-        print("Initializing")
-        return;
+        
+        self.data_path = data_path
+        self.nlp = spacy.load(embedding_path)
+        self.insist_dag = insist_dag
+        self.default_threshold = default_threshold
+        self.graphs = {}
+        self.node_names = {}
+        self.node_levels = {}
+        self.node_name_tokens = {}
+        self.node_data_names = ["level", "type", "name"]
+        self.logger = logging.getLogger(__name__)
+        
+        # Initialise the model
+        initialise()
+        return
 
     def tags(self,X):
         # text = request.json.get("text", None)
@@ -93,17 +245,16 @@ class TaxonomyApp(object):
         with open("metadata.json", "r") as f:
             metadata = json.load(f)
         return {
-            "metadata": jsonify(metadata)
+            "metadata": metadata
         }
 
     def predict_raw(self, request):
 
         # if request.method == "GET":
-        myDict = {}
 
         #     return jsonify(metadata)
-        text = request.json.get("text", None)
-        threshold = request.json.get("threshold", 1)
+        text = request.get("text", None)
+        threshold = request.get("threshold", 1)
         logger.info(text)
 
         if (text is None) or (len(text) == 0):
@@ -113,10 +264,176 @@ class TaxonomyApp(object):
             raise UserCustomException("Too many search term requested. Max: 20. Received: {}".format(len(text)),403)
 
         else:
-            
             return {
-                "data": jsonify(tx.predict(text, threshold))
+                "data": predictModel(text, threshold)
                 }
+
+
+    # ==============================================================================
+    # Model methods
+    # ==============================================================================
+    def __load_data(self):
+        
+        assert os.path.isfile(self.data_path), "data file not found!"
+        assert self.data_path[-4:].lower() == "json", "file should be a json"
+        
+        with open(self.data_path, "r") as f:
+    
+            raw_data = json.load(f)
+        
+        return raw_data
+    
+    def __check_dag(self):
+        
+        all_graphs_dag = True
+
+        for i in self.graphs:
+
+            is_dag = nx.is_directed_acyclic_graph(self.graphs[i])
+
+            all_graphs_dag *= is_dag
+            
+            if is_dag:
+                
+                self.logger.debug("{} is DAG".format(i))
+            
+            else:
+                
+                self.logger.warn("{} is not DAG".format(i))
+
+        if all_graphs_dag:
+            
+            self.logger.info("All graphs are DAG!")
+            
+        else:
+            
+            self.logger.warn("Some graphs not DAG!")
+            
+            if self.insist_dag:
+                
+                raise ValueError("All graphs must be DAG!")
+            
+    def initialise(self):
+        """Initialise the taxonomy graphs
+        """
+        for i, j in self.__load_data().items():
+            
+            self.graphs[i] = generate_graph(j)
+            
+        self.__check_dag()
+        
+        for i in self.graphs:
+            
+            self.node_names[i] = self.get_graph_node_data(i, "name")
+            self.node_levels[i] = self.get_graph_node_data(i, "level")
+            self.node_name_tokens[i] = self.node_names[i].apply(lambda x: self.nlp(x.lower()))
+            
+        return
+    
+    def get_graph_node_data(self, graph_name, data_name, **kwargs):
+        
+        graph_name = graph_name.lower()
+        data_name = data_name.lower()
+        
+        assert data_name in self.node_data_names, "data_name not found. Expect {}. Got {}."\
+            .format(", ".join(self.node_data_names), data_name)
+        
+        assert graph_name in self.graphs, "Graph not found. Expect {}. Got {}."\
+            .format(", ".join(list(self.graphs.keys())), graph_name)
+        
+        return get_graph_data(self.graphs[graph_name.lower()], data_name, **kwargs)
+    
+    def get_all_shortest_paths(self, graph_name, leaf, include_leaf=True):
+        
+        assert graph_name in self.graphs, "Graph not found. Expect {}. Got {}."\
+            .format(", ".join(list(self.graphs.keys())), graph_name)
+        
+        paths = all_shortest_paths(self.graphs[graph_name], graph_name+"_0", leaf)
+        
+        if include_leaf:
+            
+            return ["/".join(convert_node_ids_to_names(_, self.node_names[graph_name])) for _ in paths]
+        
+        else:
+            
+            return ["/".join(convert_node_ids_to_names(_[:-1], self.node_names[graph_name])) for _ in paths]
+        
+    def match_graph_nodes(self, graph_name, match_term, threshold=1.):
+        
+        assert graph_name in self.graphs, "Graph not found. Expect {}. Got {}."\
+            .format(", ".join(list(self.graphs.keys())), graph_name)
+        
+        doc = self.nlp(match_term)
+        
+        sims = self.node_name_tokens[graph_name]\
+            .apply(lambda x: x.similarity(doc) if (np.sum(x.vector) > 0) and (np.sum(doc.vector) > 0) else 0)
+        
+        sims = sims.rename("similarity")
+        
+        node_sim = pd.concat([self.node_names[graph_name], sims], axis=1)
+        
+        return node_sim.loc[sims >= threshold]
+    
+    def get_categories(self, match_term, threshold=None, **kwargs):
+        """Get the category of a particular match term
+        
+        Parameters
+        ----------
+        match_term : str
+            Word to match on
+        
+        threshold : float
+            Between 0 and 1. Minimum word similarity required when comparing match term with leaf nodes of taxonomy tree. 
+            
+            Default: None. If None, then use self.default_threshold
+            
+        kwargs 
+            Optional arguments to be passed to `get_all_shortest_paths`
+            
+        Returns
+        -------
+        list of category strings
+        """
+        
+        categories = []
+        
+        if threshold is None:
+            
+            threshold = self.default_threshold
+        
+        for i in self.graphs:
+            
+            self.logger.debug("Processing graph {}".format(i))
+            
+            node_sims = self.match_graph_nodes(i, match_term, threshold=threshold)
+            
+            for node_matched, node_sim in node_sims["similarity"].iteritems():
+                
+                categories += [(_, np.round(node_sim, 2)) for _ in self.get_all_shortest_paths(i, node_matched, **kwargs)]
+                
+        return categories
+    
+    def predictModel(self, all_match_terms, threshold=None):
+        """Match categories for all terms
+        
+        Parameters
+        ----------
+        all_match_terms : list of str
+
+        Returns
+        -------
+        dict of lists
+            key: term being matched
+            value: list containing tuples of `(category, similarity_score)`
+        """
+        
+        result = {}
+        
+        for term in all_match_terms:
+        
+            result[term] = self.get_categories(term, threshold=threshold)
+            
+        return result
 
 """
 User Defined Exception
