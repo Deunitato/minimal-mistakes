@@ -124,6 +124,7 @@ Response:
 {"data":{"names":["t:0","t:1","t:2"],"ndarray":[[0.9548873249364059,0.04505474761562512,5.7927447968953825e-05]]},"meta":{}}
 `
 
+> Unfortunately, we encounter a problem where I was not being able to push my images into kubers. Error is lack of authentication.
 
 # Pytest
 
@@ -135,7 +136,9 @@ Dependencies:
 Code structure:
 
 - Folder name, classes and methods should start with "test_"
-- run the test method by calling `pytest <foldername>
+- run the test method by calling `pytest <foldername>`
 
 Resource: 
 [Youtube](https://www.youtube.com/watch?v=wWVXf1WWCl0)
+
+
