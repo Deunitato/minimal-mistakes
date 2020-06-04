@@ -126,3 +126,15 @@ Response:
 
 
 # Pytest
+
+
+Dependencies:
+- Requests
+- Pytest
+
+Code structure:
+
+- Folder name, classes and methods should start with "test_"
+- run the test method by calling `pytest <foldername>
+
+
