@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 - The areas are very broad
 - There is a mix between application domains, techniques and AI fields
