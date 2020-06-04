@@ -137,4 +137,5 @@ Code structure:
 - Folder name, classes and methods should start with "test_"
 - run the test method by calling `pytest <foldername>
 
-
+Resource: 
+[Youtube](https://www.youtube.com/watch?v=wWVXf1WWCl0)
