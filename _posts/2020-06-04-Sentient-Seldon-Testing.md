@@ -53,7 +53,12 @@ In this case, I used an virtual environment to install my packages
 
 e.g `test_go_method`
 
-My github sample: 
+4. Run test file
+- `pytest <FILENAME>`
+
+For example, `<FILENAME>` can be `/iris_classifier` in the provided example
+
+My github sample: [link](https://github.com/Deunitato-sentient/snr-pytest-samples)
 
 Sample Tutorials:
 <[Youtube - pytest starter](https://www.youtube.com/watch?v=wWVXf1WWCl0)> , 
