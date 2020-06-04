@@ -33,6 +33,8 @@ References: <[Documentation - API testing](https://docs.seldon.io/projects/seldo
 
 `sudo apt-get install python3.7-venv`
 
+`python3 -m venv .`
+
 `source env/bin/activate`
 
 ### Dependencies
@@ -140,5 +142,3 @@ Code structure:
 
 Resource: 
 [Youtube](https://www.youtube.com/watch?v=wWVXf1WWCl0)
-
-
