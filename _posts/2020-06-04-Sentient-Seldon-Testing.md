@@ -30,6 +30,37 @@ Not able to push docker image despite being authenticated and configured
 
 # Pytest
 
+In this case, I used an virtual environment to install my packages
+
+1. Set up venv
+
+- Install it: `sudo apt-get install python3.7-venv`
+- Create Venv: `python3 -m venv .`
+- Start venv: `source env/bin/activate` or `source bin/activate`
+
+> Depending on where your bin is downloaded
+
+
+
+
+2. Install any dependency
+
+- requests: `pip3 install requests`
+
+3. Create tests
+
+- Note that title/methods should start with `test`
+
+e.g `test_go_method`
+
+My github sample: 
+
+Sample Tutorials:
+<[Youtube - pytest starter](https://www.youtube.com/watch?v=wWVXf1WWCl0)> , 
+
+## Resources
+<[Python VENV](https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments)> , <[Json and Python](https://www.w3schools.com/python/python_json.asp)> , <[Asserting json as dicts](https://stackoverflow.com/questions/35030755/assert-json-response)> , <[Converting json as dicts](https://www.geeksforgeeks.org/convert-json-to-dictionary-in-python/)> , <[Sending Headers in Post request](https://stackoverflow.com/questions/9746303/how-do-i-send-a-post-request-as-a-json)>
+
 # Seldon-core-api-tester
 - Using the iris classifier example from the previous day
 
@@ -101,5 +132,3 @@ Output:
 ## Seldon-core-api-tester (1.1.0)
 ## Resources
 <[Iris](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/examples/iris.html?highlight=iris)>,<[seldon-core-tester (0.3)](https://docs.seldon.io/projects/seldon-core/en/v0.3.0/examples/custom_endpoints.html)>, <[seldon-core-api-tester (1.1.0)](https://docs.seldon.io/projects/seldon-core/en/v0.3.0/workflow/api-testing.html#microservice-api-tester)>
-
-
