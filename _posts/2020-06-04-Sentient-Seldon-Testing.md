@@ -177,6 +177,13 @@ Check existance:
 
 `seldon-core-microservice IrisClassifier REST`
 
+- Running the command using contract.json
+
+`seldon-core-microservice-tester contract.json 0.0.0.0 5000 -p`
+
+> This will return no response however
+
+
 
 
 
