@@ -184,8 +184,10 @@ Check existance:
 > This will return no response however
 
 
-
-
-
 ## Resources
 <[Iris](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/examples/iris.html?highlight=iris)>,<[seldon-core-tester (0.3)](https://docs.seldon.io/projects/seldon-core/en/v0.3.0/examples/custom_endpoints.html)>, <[seldon-core-api-tester (1.1.0)](https://docs.seldon.io/projects/seldon-core/en/v0.3.0/workflow/api-testing.html#microservice-api-tester)>
+
+
+> In conclusion, i think pytest is a much better testing framework compared to seldon-core-api-tester. 
+> 1. More documentation/Widely use
+> 2. Seldon core is still new so it is quite buggy and lack of documentation
