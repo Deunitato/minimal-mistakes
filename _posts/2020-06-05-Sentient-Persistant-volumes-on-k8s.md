@@ -2,9 +2,7 @@
 published: true
 ---
 # Things done today
-- Seldon python client
-- Persistent volume readup
-- Deploying persistent volume on k8s - Taxonomy
+- Taxonomy kubernetes migration
 
 Issues created today: [Seldon-core-Api-tester command on ambassador](https://github.com/SeldonIO/seldon-core/issues/1914)
 
