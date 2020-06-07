@@ -112,6 +112,8 @@ Location: Workloads > Taxanomy > pods > init-cloud
 
 - Deploy the new deployment: `kubectl apply -f seldon_deployment.yaml`
 
+> Check that the pods are working fine
+
 ## Errors made
 
 ### Code base (changes)
