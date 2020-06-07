@@ -118,3 +118,31 @@ Location: Workloads > Taxanomy > pods > init-cloud
 - Missing application code
 e.g `raise UserCustomException('Bad Request. No data found.',403)` -> `raise UserCustomException('Bad Request. No data found.',1403,403)`
 - Shifted userexception class on top of taxonomy
+- function calls inside `taxonomy` classes must be called using `self`
+e.g `self.initialise()`
+- global terms called inside taxonomy's function must start with the class name
+e.g `Taxaonomy.MAX_TERM`
+- Logger must be change to not reflect `__name__`
+e.g `logger(__name__)` => `logger()`
+
+Reference: [{Logger}](https://www.loggly.com/ultimate-guide/python-logging-basics/) , [{__Name___}](https://www.freecodecamp.org/news/whats-in-a-python-s-name-506262fe61e8/#:~:text=The%20__name__%20variable%20(two%20underscores%20before%20and%20after,a%20module%20in%20another%20script.)
+
+### Building base
+
+#### Sudo apt update error
+Error:
+![seldon_migration_1.png]({{site.baseurl}}/img/seldon_migration_1.png)
+
+- Receive error: sudo apt update error: “Release file is not yet valid”
+- Results in images build partially and images built with no names and tags
+Fix: [{issue}](https://askubuntu.com/questions/1096930/sudo-apt-update-error-release-file-is-not-yet-valid)
+
+#### Images build without tags
+
+- Run the command `docker images`
+- look for the "built" images with no tags
+- Remove using `docker rmi -f <imagetag>`
+
+> Multiple image tags can be stacked by seperating them with spaces
+
+
