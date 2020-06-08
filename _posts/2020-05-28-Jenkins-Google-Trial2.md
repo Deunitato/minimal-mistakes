@@ -159,6 +159,8 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 
 `kubectl create clusterrolebinding jenkins-deploy --clusterrole=cluster-admin --serviceaccount=default:cd-jenkins`
 
+- Get the password:
+`printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo`
 
 7. Create a service loadbalancer deployment
 
