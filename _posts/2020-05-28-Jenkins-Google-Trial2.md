@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 Scapping the pervious, I created a another installation of jenkins following another lab (master)
 
@@ -196,6 +196,3 @@ spec:
 
 
 <iframe src="https://drive.google.com/file/d/1iX87vYWvn7XqvHA2BVD63mBTrJFUjVSg/preview" width="640" height="680"></iframe>
-
-
-
