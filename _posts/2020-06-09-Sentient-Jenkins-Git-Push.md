@@ -96,8 +96,25 @@ Git Website:https://github.com/science-experiements-divya/taxanomy-trial-jenkins
       }
 ```
 
+
+## Output
+
+#### Jenkins log:
+![seldon_migration_2.png]({{site.baseurl}}/img/seldon_migration_2.png)
+
+
+#### Git repo
+![seldon_migration_3.png]({{site.baseurl}}/img/seldon_migration_3.png)
+
+![seldon_migration_4.png]({{site.baseurl}}/img/seldon_migration_4.png)
+
+![seldon_migration_5.png]({{site.baseurl}}/img/seldon_migration_5.png)
+
+
 ## References
 [{Issue}](https://stackoverflow.com/questions/38769976/is-it-possible-to-git-merge-push-using-jenkins-pipelinea) , [{Official sample}](https://github.com/jenkinsci/pipeline-examples/blob/master/pipeline-examples/push-git-repo/pushGitRepo.groovy) , [{jenkins git push}](https://stackoverflow.com/questions/53325544/jenkins-pipeline-git-push)
 
 ## Issues:
 - Infinite loop: Find a way to rewrite the jenkinsfile if not it will keep webhooking or only webhook a certain branch
+
+# Jenkins pull only when tagged
