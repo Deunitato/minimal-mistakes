@@ -67,57 +67,40 @@ pipeline {
      JENKINS_CRED = "${PROJECT_TITLE}"
      GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp_service_account_key_sentient');
     }
+agent any
 
+      stage('Install application dependencies'){
+          steps{
 
-  agent {
-    kubernetes {
-     label 'taxonomy-1'
-      defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    component: ci
-spec:
-  # Use service account that can deploy to all namespaces
-  serviceAccountName: cd-jenkins
-  containers:
-  - name: gcloud
-    image: gcr.io/cloud-builders/gcloud
-    command:
-    - cat
-    tty: true
-  - name: kubectl
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true
-"""
-  }
-}
-  stages {
-    stage('Build and push image with Container Builder') {
-      steps {
-        container('gcloud') {
-             sh """
-                 gcloud auth activate-service-account --key-file ${env.GOOGLE_APPLICATION_CREDENTIALS}
-                 """
-          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ./deploy"
-        }
+                sh """
+                apt-get -y update
+                apt -y install python3-pip
+                apt -y install python-pip
+                apt install -y build-essential wget zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
+                wget https://www.python.org/ftp/python/3.7.7/Python-3.7.7.tgz
+                tar -xf Python-3.7.7.tgz
+                cd Python-3.7.7
+                ./configure --enable-optimizations
+                make altinstall
+                python3 -m pip install virtualenv
+                """
+
+                 sh 'python3.7 --version'
+                dir('Alfred'){
+                  sh """
+                  python3.7 -m pip install -e .
+                """
+                 }
+                sh 'python3.7 -m pip install -r requirements.txt'
+                dir('deploy'){
+                  sh """
+                    python3.7 Alfred_script.py
+                    """
+                }
+
+          }
       }
-    }
-    stage('Deploy to k8s deployment-model') {
-      // master branch
-      when { branch 'master' }
-      steps {
-        container('kubectl') {
-          sh("sed -i.bak 's#gcr.io/science-experiments-divya/taxonomy:0.1.7#'${IMAGE_TAG}'#' ./k8s/*.yaml")
-
-          sh("kubectl --namespace=${namespace} apply -f k8s/")
-        } 
-      }
-    }  
+ 
   }
 }
 ```
@@ -131,8 +114,10 @@ Follow the github setup and add a github credentials to access a private reposit
 - Installed [pyenv plugin](https://www.jenkins.io/doc/pipeline/steps/pyenv-pipeline/)
 - Python
 - Python Wrapper
-- docker
 
 
 
-Resources: [{If-else jenkins}](https://stackoverflow.com/questions/43587964/jenkins-pipeline-if-else-not-working) , [{Change directory Jenkins}](https://stackoverflow.com/questions/52372589/jenkins-pipeline-how-to-change-to-another-folder) , [{file exist jenkins}](https://stackoverflow.com/questions/38534781/check-if-a-file-exists-in-jenkins-pipeline) , 
+
+
+
+Resources: [{If-else jenkins}](https://stackoverflow.com/questions/43587964/jenkins-pipeline-if-else-not-working) , [{Change directory Jenkins}](https://stackoverflow.com/questions/52372589/jenkins-pipeline-how-to-change-to-another-folder) , [{file exist jenkins}](https://stackoverflow.com/questions/38534781/check-if-a-file-exists-in-jenkins-pipeline) ,
