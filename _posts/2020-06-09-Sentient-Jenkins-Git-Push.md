@@ -154,6 +154,9 @@ Install plugin: [Basic branch build strategies](https://github.com/jenkinsci/bas
 
 ![seldon_migration_7.PNG]({{site.baseurl}}/img/seldon_migration_7.PNG)
 
+![seldon_migration_8.PNG]({{site.baseurl}}/img/seldon_migration_8.PNG)
+
+
 
 https://issues.jenkins-ci.org/browse/JENKINS-47496
 
