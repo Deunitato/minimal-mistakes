@@ -118,3 +118,58 @@ Git Website:https://github.com/science-experiements-divya/taxanomy-trial-jenkins
 - Infinite loop: Find a way to rewrite the jenkinsfile if not it will keep webhooking or only webhook a certain branch
 
 # Jenkins pull only when tagged
+- Tried to change ref
+- Tried to use git
+
+Found:
+- Tag push consider as a "push event" thus cannot configure webhook at github side
+
+Tried resources:
+
+https://stackoverflow.com/questions/29742847/jenkins-trigger-build-if-new-tag-is-released
+
+https://stackoverflow.com/questions/45274238/jenkins-pipeline-project-trigger-builds-for-creation-of-tags-and-branch-commits
+
+https://medium.com/@systemglitch/continuous-integration-with-jenkins-and-github-release-814904e20776
+
+https://github.com/mohamicorp/stash-jenkins-postreceive-webhook/issues/166
+
+https://github.com/Shippable/support/issues/3470
+
+https://github.com/jenkinsci/gitlab-plugin/issues/96
+
+
+
+
+
+===================
+
+
+## Working solution
+
+Install plugin: [Basic branch build strategies](https://github.com/jenkinsci/basic-branch-build-strategies-plugin/blob/master/docs/user.adoc)
+
+- remove discover branches
+- add fidcover tags
+
+![seldon_migration_7.PNG]({{site.baseurl}}/img/seldon_migration_7.PNG)
+
+
+https://issues.jenkins-ci.org/browse/JENKINS-47496
+
+> Downside: Builds all tags on ALL branches (if multipipeline)
+
+# Running packages when it is not in the repository
+
+The problem is because we do not want the alfred package to be in the repository and to be stored somewhere, thus we need to find a way to store this private package somewhere in order for jenkins to be able to pull and to execute the script in order to generate the deployment files (Alfred).
+
+- Possible docker
+- Possible shared libraries
+
+## Docker
+
+Idea: To dockerise Alfred, store Alfred package inside an image and let docker run the script after it is being mounted on.
+Docker could install Alfred packages and run the
+
+https://www.jenkins.io/blog/2018/09/14/kubernetes-and-secret-agents/
+https://stackoverflow.com/questions/56456947/how-to-install-custom-packages-in-jenkins-docker-container
