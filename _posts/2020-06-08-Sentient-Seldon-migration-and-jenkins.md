@@ -45,7 +45,25 @@ File Changes:
 2. `kubectl apply -f persistent_volume.yaml`
 	- Check using `kubectl get pv`
 3. `kubectl apply -f persistentvolumeclaim.yaml`
+4. `kubectl apply -f initcontainer.yaml`
+-> Check that the init-cloud has a green tick on k8s
+5. `kubectl delete -f initcontainer.yaml`
+6. `kubectl apply -f seldon_deployment.yaml`
 
+## Debugging
+
+### Checking the initial deployment is deployed
+- `kubectl get sdep`
+- `kubectl get sdep <name> -o jsonpath = '{status}'`
+- Check pod logs
+
+### Cleaning
+- `kubectl delete -f seldon-deployment.yaml`
+- `kubectl get pv` -> Check for your volume
+- Volume deletion:
+	- `kubectl delete -f persistantvolumeclaim.yaml`
+    - `kubectl delete -f persistant_volume.yaml`
+> Volume deletion must follow order
 
 # Jenkins pipeline research
 
