@@ -6,7 +6,6 @@ published: true
 - Jenkins simple pipeline
 - Jenkins 2 source for gitrepo
 - 2 Jenkins file: One invoke the other
-- Pytest email
 
 
 # Jenkins job built base on tags
