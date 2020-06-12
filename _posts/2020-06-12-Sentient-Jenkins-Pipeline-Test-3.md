@@ -106,4 +106,37 @@ agent any
 
 # 2 Jenkinsfile in repository
 
-# Deployment of Alfred yaml throguh jenkins
+- Was able to do so by specifying the script path in the jenkins configuration
+
+
+
+
+# Fetching through tags
+
+Original file:
+```
+      stage("Fetch Alfred"){
+        when { expression { IS_ALFRED_EXIST == 'false' } }
+        steps {
+                withCredentials([usernamePassword(credentialsId: 'github-divya', usernameVariable: 'USER', passwordVariable: 'PASS')]) 
+                {
+                    sh """
+                    virtualenv .env
+                    source .env/bin/activate
+                    git config user.name "${USER}"
+                    git config user.email "${USER}@gmail.com"
+                    git clone https://${USER}:${PASS}@github.com/science-experiements-divya/alfredtest.git
+                    cp -r alfredtest/Alfred ./
+                    cd Alfred
+                    python3.7 -m pip install --ignore-installed -e .
+                    python3.7 -m pip install -r requirements.txt
+                    """
+                } 
+            }
+      }
+```
+
+## Wget
+
+> doesnt work due to credential issues
+
