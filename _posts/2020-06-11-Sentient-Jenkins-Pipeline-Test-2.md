@@ -57,6 +57,8 @@ Tried this: https://dzone.com/articles/adding-a-github-webhook-in-your-jenkins-p
 
 - Just clone the repository and the file is "imported"
 
+> Issue: When there is an update, the pipeline will not clone again since it will see it as already done due to `when { expression { IS_ALFRED_EXIST == 'false' } }`
+
 # Invoking another job from one job
 
 Multipipeline:
