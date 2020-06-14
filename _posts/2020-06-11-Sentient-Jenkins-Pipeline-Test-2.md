@@ -85,4 +85,20 @@ Single pipeline (No branches):
 ```
 - 'simple-pipeline' is a jenkins job that uses just one pipeline
 
+
+Single pipeline within folder:
+
+
+```
+      stage("Attempt trigger other job"){
+        steps {
+          build job: 'microservice/testing-pipeline', propagate: true, wait: true
+        }
+      }
+```
 References: [Issue](https://stackoverflow.com/questions/46471467/jenkins-fails-on-building-a-downstream-job)
+
+# 2 Jenkinsfile - one invoke the other
+- This is a simple: Just specify the path in the configuration
+
+> I have only tried out on the multipipeline one
