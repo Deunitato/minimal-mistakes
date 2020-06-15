@@ -162,6 +162,8 @@ agent any
 
 # Venv in main directory
 1. Configure global paths
+Manage Jenkins > System Configuration:
+![jenkins-test-3.PNG]({{site.baseurl}}/img/jenkins-test-3.PNG)
 
 2. Add the `${env.WORKSPACE_DIR}` in the code
 
@@ -190,5 +192,36 @@ Installing virtual Environment:
         }
       }
 ```
+
+Navigating in different directories:
+```
+      stage("Fetch Alfred"){
+        when { expression { IS_ALFRED_EXIST == 'false' } }
+        steps {
+                withCredentials([usernamePassword(credentialsId: 'github-divya', usernameVariable: 'USER', passwordVariable: 'PASS')]) 
+                {
+                    sh """
+                    cd ${env.WORKSPACE_DIR}
+                    virtualenv .env
+                    source .env/bin/activate
+                    cd ${env.WORKSPACE}
+                    rm -r alfredtest
+                    git config user.name "${USER}"
+                    git config user.email "${USER}@gmail.com"
+                    git clone https://${USER}:${PASS}@github.com/science-experiements-divya/alfredtest.git
+                    cp -r alfredtest/Alfred ${env.WORKSPACE_DIR}
+                    """
+                } 
+        }
+      }
+```
+
+
+Notes:
+- each sh is a new shell (You have to start the virtual environment each time)
+- Venv is stored in main workspace as set by the global variable {WORKSPACE_DIR}
+
+
+
 
 Resource: [Global environment](https://dzone.com/articles/jenkins-02-changing-home-directory)
