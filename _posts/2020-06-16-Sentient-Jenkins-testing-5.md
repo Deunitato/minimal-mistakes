@@ -251,6 +251,9 @@ Code snippet of running stage:
 
 Plugins:
 - Email Extension	
+Configuration:
+![jenkins-test-7.PNG]({{site.baseurl}}/img/jenkins-test-7.PNG)
+
 
 
 Resource:
