@@ -56,7 +56,7 @@ File Changes:
 - `kubectl get sdep`
 - `kubectl get sdep wordsense -o jsonpath='{.status}'`
 - `kubectl get sdep wordsense -o json | jq .status`
-- 
+
 - Check pod logs
 
 ### Cleaning
