@@ -252,12 +252,16 @@ Code snippet of running stage:
 Plugins:
 - Email Extension	
 Configuration:
+
+Extended:
 ![jenkins-test-7.PNG]({{site.baseurl}}/img/jenkins-test-7.PNG)
 
+Normal:
+![jenkins-test-8.PNG]({{site.baseurl}}/img/jenkins-test-8.PNG)
 
 
 Resource:
-[Tutorial email](https://www.youtube.com/watch?v=mb8WOHejlT8)
+[{Tutorial email}](https://www.youtube.com/watch?v=mb8WOHejlT8) , [{Gmail email config}](https://support.google.com/mail/answer/7126229?p=WantAuthError&visit_id=637280509600289821-3949258955&rd=2#cantsignin) , 
 
 # Resources
 [{Jsonpath}](https://kubernetes.io/docs/reference/kubectl/jsonpath/), [{Gcloud disk create}](https://isb-cancer-genomics-cloud.readthedocs.io/en/latest/sections/gcp-info/gcp-info2/Disks.html), [{}]
