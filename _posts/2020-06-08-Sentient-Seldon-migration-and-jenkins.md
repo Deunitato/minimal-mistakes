@@ -59,6 +59,8 @@ File Changes:
 
 - Check pod logs
 
+[Seldon-core troubleshooting](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/workflow/troubleshooting.html)
+
 ### Cleaning
 - `kubectl delete -f seldon-deployment.yaml`
 - `kubectl get pv` -> Check for your volume
