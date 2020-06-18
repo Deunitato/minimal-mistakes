@@ -8,6 +8,8 @@ published: true
 
 ## File Changes
 
+> For the seldon_deployment file, the containername ,class name , file name everything should be same
+
 ### bert_util
 
 1. Added model_dir in global
