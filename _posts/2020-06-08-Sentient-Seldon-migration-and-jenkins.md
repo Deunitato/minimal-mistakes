@@ -24,6 +24,16 @@ published: true
 
 File Changes:
 
+Configuration:
+
+`Config-eng.json`:
+- the service name is usually `<metadataname>-<podname>.default:8000`
+
+`Config.yaml`
+- Container name and graph name must be the same
+  
+
+
 `initcontainer.yaml`:
 - Copy similiar to seldon-deployment.yaml
 - Remove all `readonly`
