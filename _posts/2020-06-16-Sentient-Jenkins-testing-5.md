@@ -259,6 +259,28 @@ Extended:
 Normal:
 ![jenkins-test-8.PNG]({{site.baseurl}}/img/jenkins-test-8.PNG)
 
+## Emailling the attachment
+
+- Adding this post block will ensure that the pipeline will always email the results
+
+```
+    post {
+        always {
+            script {
+                if (currentBuild.currentResult == 'SUCCESS') { // Other values: SUCCESS, UNSTABLE
+                    // Send an email only if the build status has changed from green/unstable to red
+                    emailext attachmentsPattern: 'test/results.xml',
+                        mimeType: 'text/xml',
+                        subject: currentBuild.currentResult + " : " + env.JOB_NAME,
+                        body: '''${SCRIPT, template = "emailTest1-html.template"}''',
+                        to: 'charlotte@sentient.io'
+                }
+            }
+        }
+    }
+```
+
+The working line was `emailext attachmentsPattern: 'test/results.xml',`
 
 Resource:
 [{Tutorial email}](https://www.youtube.com/watch?v=mb8WOHejlT8) , [{Gmail email config}](https://support.google.com/mail/answer/7126229?p=WantAuthError&visit_id=637280509600289821-3949258955&rd=2#cantsignin) , 
