@@ -54,7 +54,9 @@ File Changes:
 
 ### Checking the initial deployment is deployed
 - `kubectl get sdep`
-- `kubectl get sdep <name> -o jsonpath = '{status}'`
+- `kubectl get sdep wordsense -o jsonpath='{.status}'`
+- `kubectl get sdep wordsense -o json | jq .status`
+- 
 - Check pod logs
 
 ### Cleaning
