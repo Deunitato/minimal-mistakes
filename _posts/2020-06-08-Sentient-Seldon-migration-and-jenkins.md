@@ -29,9 +29,25 @@ Configuration:
 `Config-eng.json`:
 - the service name is usually `<metadataname>-<podname>.default:8000`
 
+> ambassador_service must be filled up like this: `<metadataname_in_config_yaml>-<predictorname_in_config_yaml>.default:8000`
+
 `Config.yaml`
 - Container name and graph name must be the same
   
+Note: metadata_name in `config.yaml` must be the same as ambassador_service in `config-engg.yaml`
+
+NAMING CONVENTIONS
+
+- Every seldon deployment has the name <metadata_name>-<predictor_name>-<spec_name>
+- So fill the config.yaml accordingly
+- The name of python file , class , Alfred parameters - “<container_name>”,”<MODEL_NAME>” should be the same except that the “<container_name>” should be in lowercase
+- The <container_name> and name of transformer or model in the graph should be the same
+<tag_num> should always start with prefix “v-” Eg: v-0.1.0
+- The model files of each microservice should be placed under a folder in the science central bucket with name  <container_name>:<tag_num> 
+- Scientists need to access the path to the models, in the python program using the environment variable “MODEL_DIR” which will be created in the dockerfile by Alfred
+MODEL_DIR=/models/<container_name>/tag_num
+
+
 
 
 `initcontainer.yaml`:
