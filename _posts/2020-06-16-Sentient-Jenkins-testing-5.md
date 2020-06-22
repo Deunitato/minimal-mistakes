@@ -259,9 +259,14 @@ Extended:
 Normal:
 ![jenkins-test-8.PNG]({{site.baseurl}}/img/jenkins-test-8.PNG)
 
-## Emailling the attachment
+## Emailing the attachment
 
 - Adding this post block will ensure that the pipeline will always email the results
+
+### HTML:
+
+- Install: `python3.7 -m pip install pytest-html`
+- Generating it: `python3.7 -m pytest --html=results.html *.py` > Generates the file into results.html
 
 ```
     post {
@@ -281,6 +286,8 @@ Normal:
 ```
 
 The working line was `emailext attachmentsPattern: 'test/results.xml',`
+
+
 
 Resource:
 [{Tutorial email}](https://www.youtube.com/watch?v=mb8WOHejlT8) , [{Gmail email config}](https://support.google.com/mail/answer/7126229?p=WantAuthError&visit_id=637280509600289821-3949258955&rd=2#cantsignin) , 
