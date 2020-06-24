@@ -82,6 +82,7 @@ Model files:
 3. `kubectl apply -f persistentvolumeclaim.yaml`
 4. `kubectl apply -f initcontainer.yaml`
 -> Check that the init-cloud has a green tick on k8s
+-> Only apply this file when the models have been pushed
 5. `kubectl delete -f initcontainer.yaml`
 6. `kubectl apply -f seldon_deployment.yaml`
 
