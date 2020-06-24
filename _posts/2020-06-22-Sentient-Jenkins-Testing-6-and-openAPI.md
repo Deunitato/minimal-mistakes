@@ -149,7 +149,7 @@ Code snippet:
 - This is independent of other jobs
 
 In this example, the stage "Fetching Alfred" has the code snippet above.
-Only build `#1` is being executed but in build `#2`, it is not
+Only build `#1` is being executed but in build `#2`, it is not being runned
 ![jenkins-test-12.PNG]({{site.baseurl}}/img/jenkins-test-12.PNG)
 
 Resources: [{Issue - when condition jenkins}](https://stackoverflow.com/questions/37690920/conditional-step-stage-in-jenkins-pipeline)
