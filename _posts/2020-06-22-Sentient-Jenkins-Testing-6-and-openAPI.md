@@ -4,7 +4,7 @@ published: true
 # Things done today
 - Jenkins: Alfred installtion using tags
 - Jenkins: Build number running 
-- OpenAPI
+
 
 # Alfred installation using tags
 
@@ -154,4 +154,4 @@ Only build `#1` is being executed but in build `#2`, it is not being runned
 
 Resources: [{Issue - when condition jenkins}](https://stackoverflow.com/questions/37690920/conditional-step-stage-in-jenkins-pipeline)
 
-# OpenAPI
+
