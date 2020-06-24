@@ -24,31 +24,40 @@ published: true
 
 File Changes:
 
-Configuration:
 
-`Config-eng.json`:
-- the service name is usually `<metadataname>-<podname>.default:8000`
-
-> ambassador_service must be filled up like this: `<metadataname_in_config_yaml>-<predictorname_in_config_yaml>.default:8000`
-
-`Config.yaml`
-- Container name and graph name must be the same
-  
-Note: metadata_name in `config.yaml` must be the same as ambassador_service in `config-engg.yaml`
-
-NAMING CONVENTIONS
-
-- Every seldon deployment has the name <metadata_name>-<predictor_name>-<spec_name>
-- So fill the config.yaml accordingly
-- The name of python file , class , Alfred parameters - “<container_name>”,”<MODEL_NAME>” should be the same except that the “<container_name>” should be in lowercase
-- The <container_name> and name of transformer or model in the graph should be the same
-<tag_num> should always start with prefix “v-” Eg: v-0.1.0
-- The model files of each microservice should be placed under a folder in the science central bucket with name  <container_name>:<tag_num> 
-- Scientists need to access the path to the models, in the python program using the environment variable “MODEL_DIR” which will be created in the dockerfile by Alfred
-MODEL_DIR=/models/<container_name>/tag_num
+### NAMING CONVENTIONS:
 
 
+Config-eng: 
+- Ambassador service: `<metadataname_in_config_yaml>-<predictorname_in_config_yaml>.default:8000`
+- project_name: `Any name`
+- ambassador_mappingname: `<project_name>_mapping
+- Ambassador_customurl: `/microservices/nlp/<project_name>/v0.1/getpredictions
 
+Config.yaml:
+
+- `metadata_name`: `<main pyfile name in lowercase>`
+- `tag_num`: should always start with prefix "v-" Eg: `v-0.1.0`
+- `container_name`: same as `metadata_name`
+- `MODEL_NAME`: same as `metadata_name`
+- graph name: same as `metadata_name`
+- predictor name: Any value as long as same as config-eng,  e.g `pod`
+
+> Note that the deployment will have the name format as `<metadata_name>-<predictor_name>-<spec_name>` so ensure that it is not too long if not it will not work
+
+Python files:
+- Class name: ProjectName in but starting with caps
+- Pyfile name: Same as class name
+
+Model files:
+- The model files of each microservice should be placed under a folder in the science central bucket with name  `<container_name>:<tag_num>`
+- Ensure that the models are placed in the science-central bucket under a folder with name `<containername>-<tag_num>`
+- Scientists need to access the path to the models, in the python program using the environment variable `MODEL_DIR` which will be created in the dockerfile by Alfred
+`MODEL_DIR=/models/<container_name>/tag_num`
+
+
+
+### Other files
 
 `initcontainer.yaml`:
 - Copy similiar to seldon-deployment.yaml
@@ -79,6 +88,7 @@ MODEL_DIR=/models/<container_name>/tag_num
 ## Debugging
 
 ### Checking the initial deployment is deployed
+
 - `kubectl get sdep`
 - `kubectl get sdep wordsense -o jsonpath='{.status}'`
 - `kubectl get sdep wordsense -o json | jq .status`
