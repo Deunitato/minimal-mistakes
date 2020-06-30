@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 Theres a problem with my Jenkins pipeline and I was unable to run the nodes in the same workspace. So this entire post is dedicated to the solving of that problems
 
