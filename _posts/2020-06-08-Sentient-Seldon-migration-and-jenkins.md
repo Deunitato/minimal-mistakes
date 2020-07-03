@@ -98,6 +98,9 @@ Model files:
 
 [Seldon-core troubleshooting](https://docs.seldon.io/projects/seldon-core/en/v1.1.0/workflow/troubleshooting.html)
 
+### Docker image
+`docker run --rm --name mymodel -p 5000:5000 gcr.io/science-experiments-divya/iris_example:0.1`
+
 ### Cleaning
 - `kubectl delete -f seldon-deployment.yaml`
 - `kubectl get pv` -> Check for your volume
