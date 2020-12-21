@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 # Data Center Management
 
