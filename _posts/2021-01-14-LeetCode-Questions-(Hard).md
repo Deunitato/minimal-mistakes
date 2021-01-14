@@ -74,3 +74,50 @@ class Solution:
                 
         return ans
 ```
+
+## Populating Next Right Pointers in Each Node: [Link](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
+
+#### First attempt
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+"""
+
+class Solution:
+    def connect(self, root: 'Node') -> 'Node':
+        if root == None:
+            return root
+        queue = []
+        queue.append(root)
+        pointer = root
+        root.next = None
+        
+        while len(queue) != 0:
+            temp = []
+            while len(queue) != 0: #Load the values of queue
+                pointer = queue[0]
+                del queue[0]
+                if pointer.left == None:
+                    return root
+                temp.append(pointer.left)
+                temp.append(pointer.right)
+            
+            queue = temp.copy()
+            for x in range(0, len(queue)):
+                curr = queue[x]
+                if(x == (len(queue) - 1)):
+                    curr.next = None
+                else:
+                    curr.next = queue[x+1]
+                
+                      
+                
+          
+```
