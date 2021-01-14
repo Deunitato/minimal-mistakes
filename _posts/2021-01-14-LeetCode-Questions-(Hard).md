@@ -75,7 +75,7 @@ class Solution:
         return ans
 ```
 
-## Populating Next Right Pointers in Each Node: [Link](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
+## Populating Next Right Pointers in Each Node (116): [Link](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
 
 #### First attempt
 
@@ -120,4 +120,47 @@ class Solution:
                       
                 
           
+```
+
+
+## Number of island (200): [Link](https://leetcode.com/problems/number-of-islands/)
+
+Question statement:
+
+Given a grid, find the number of islands denoted by a '1'
+
+
+### First attempt
+
+Idea:
+- Using DFS/BFS to search for island
+- Iterate through all grid space
+- change the grid when an island is found
+
+```python
+def numIslands(self, grid: List[List[str]]) -> int:
+        #gridspace = len(grid) * len(grid[0])
+        m = len(grid)
+        n = len(grid[0])
+        stack = []
+        count = 0
+        for x in range(m):
+            for y in range(n):
+                if grid[x][y] == '1':
+                    #Locate the island
+                    count = count + 1
+                    stack.append((x,y))
+                    while len(stack) != 0:
+                        coorX,coorY = stack[len(stack)-1]
+                        del stack[len(stack)-1]
+                        if coorX < 0 or coorY < 0 or coorX >= m  or coorY >= n:
+                            continue
+                        point = grid[coorX][coorY]
+                        grid[coorX][coorY] = '#'
+                        if point == '1':
+                            stack.append((coorX + 1,coorY))
+                            stack.append((coorX - 1,coorY))
+                            stack.append((coorX ,coorY + 1))
+                            stack.append((coorX,coorY - 1))
+        return count
 ```
