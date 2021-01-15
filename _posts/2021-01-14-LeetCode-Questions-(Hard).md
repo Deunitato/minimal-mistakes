@@ -1,6 +1,37 @@
 ---
 published: true
 ---
+# LeetCode (BackTracking)
+
+## Letter Combinations of a Phone Number (17): [Link](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)
+
+#### First attempt
+
+```python
+    def letterCombinations(self, digits: str) -> List[str]:
+        if len(digits) == 0:
+            return []
+        mapping = { '1':[] ,
+                   '2': ['a','b','c'],
+                   '3':['d', 'e', 'f'],
+                   '4': ['g', 'h', 'i'],
+                   '5': ['j', 'k', 'l'],
+                   '6': ['m', 'n', 'o'],
+                   '7': ['p', 'q', 'r', 's'],
+                   '8': ['t', 'u', 'v'],
+                   '9': [ 'w', 'x', 'y', 'z']}
+        char = digits[0]
+        backside = self.letterCombinations(digits[1:])
+        if backside == []:
+            backside = ['']
+        ans = []
+        for c in mapping[char]:
+            for x in backside:
+                ans.append(c + x)
+        return ans
+        
+```
+
 # Leetcode (Tree Traversal)
 
 ## Inorder binary tree traversal (94) : [Link](https://leetcode.com/problems/binary-tree-inorder-traversal/)
