@@ -17,6 +17,9 @@ Expectations:
 - Create class and using props
 
 # Context API
+
+## Context Provider
+
 Gives us a way to share state up and down component tree without using props. This is good because as the number of components increased, it wont get so messy. We do not need to pass it down as props. 
 
 This is also an alteranative to redux.
@@ -99,6 +102,33 @@ class Navbar extends Component {
 
 What this does is that it would look up the nearest contextprovider, which is in the app.js and locate the values from there. It would be able to have access to the values. `console.log(this.context)` would print out all the values taken from state in ThemeContext
 
+## Context consumer
 
+Usage in Component:
 
+```Typescript
+class Navbar extends Component {
+    render () {
+        return (
+            <ThemeContext.Consumer>{(context)=> {
+                const {isLightTheme, light, dark} = context;
+                const theme = isLightTheme ? light : dark;
+                return (
+                    <nav style = {{background: theme.ui, color:theme}}>
+                    <h1>Context App</h1>
+                    <ul>
+                        <li>Home</li>
+                        <li>About</li>
+                        <li>Contact</li>
+                    </ul>
+                </nav>
+                );
+            }}
+            </ThemeContext.Consumer>
+        )
+    }
+}
+```
+
+It works the same as a provider, only that we are returning a function that takes in a value `context` and a tag from `ThemeContext.consumer`.
 
