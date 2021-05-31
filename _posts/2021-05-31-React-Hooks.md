@@ -28,3 +28,50 @@ What we do is to create a context. Provide it to our component tree so that the 
 
 ![reacthooks_2.PNG]({{site.baseurl}}/img/reacthooks_2.PNG)
 
+Check this docs: [Context docs](https://reactjs.org/docs/context.html)
+
+We would define a theme context component
+
+```Typescript
+import React, { Component, createContext } from 'react'
+
+export const ThemeContext = createContext();
+
+class ThemeContextProvider extends Component {
+    state = {
+        isLightTheme: true,
+        light: { syntax: '#555', ui: '#ddd', bg: '#eee'},
+        dark: { syntax: '#ddd', ui: '#333', bg: '#555'}
+    }
+    render() {
+        return (
+            <ThemeContext.Provider value={{...this.state}}>
+                {this.props.children /**This refer to the children that this tag wraps around */}
+            </ThemeContext.Provider>
+        );
+    }
+}
+
+export default ThemeContextProvider;
+```
+
+Using the `<ThemeContext>` as a parent tag would allow the children to access these variables under the state values.
+
+Usage in the app.js
+
+```Typescript
+function App() {
+  return (
+    <div className="App">
+      <ThemeContextProvider>
+        <Navbar />
+        <BookList/>
+      </ThemeContextProvider>
+    </div>
+  );
+}
+```
+
+
+
+
