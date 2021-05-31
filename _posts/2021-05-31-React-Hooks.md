@@ -35,7 +35,7 @@ Check this docs: [Context docs](https://reactjs.org/docs/context.html)
 
 We would define a theme context component
 
-```Typescript
+```ts
 import React, { Component, createContext } from 'react'
 
 export const ThemeContext = createContext();
@@ -62,7 +62,7 @@ Using the `<ThemeContext>` as a parent tag would allow the children to access th
 
 Usage in the app.js
 
-```Typescript
+```ts
 function App() {
   return (
     <div className="App">
@@ -77,7 +77,7 @@ function App() {
 
 Usage in the component:
 
-```Typescript
+```ts
 class Navbar extends Component {
     static contextType = ThemeContext; //This would look up the component tree and find the nearest provider
     render () {
@@ -106,7 +106,7 @@ What this does is that it would look up the nearest contextprovider, which is in
 
 Usage in Component:
 
-```Typescript
+```ts
 class Navbar extends Component {
     render () {
         return (
