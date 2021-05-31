@@ -72,6 +72,32 @@ function App() {
 }
 ```
 
+Usage in the component:
+
+```Typescript
+class Navbar extends Component {
+    static contextType = ThemeContext; //This would look up the component tree and find the nearest provider
+    render () {
+        console.log(this.context);
+        const {isLightTheme, light, dark} = this.context;
+        const theme = isLightTheme ? light : dark;
+        return (
+            <nav style = {{background: theme.ui, color:theme.syntax}}>
+                <h1>Context App</h1>
+                <ul>
+                    <li>Home</li>
+                    <li>About</li>
+                    <li>Contact</li>
+                </ul>
+            </nav>
+        )
+    }
+}
+
+
+```
+
+What this does is that it would look up the nearest contextprovider, which is in the app.js and locate the values from there. It would be able to have access to the values. `console.log(this.context)` would print out all the values taken from state in ThemeContext
 
 
 
