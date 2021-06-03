@@ -132,7 +132,4 @@ class Navbar extends Component {
 
 It works the same as a provider, only that we are returning a function that takes in a value `context` and a tag from `ThemeContext.consumer`.
 
-This method is better than the other way (Provider) because we can use it in functional components. We can also consume multiple context in this method. 
-
-
-
+This method is better than the other way (Provider) because we can use it in functional components. We can also consume multiple context in this method.
